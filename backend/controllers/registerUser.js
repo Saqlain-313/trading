@@ -1,6 +1,5 @@
-const md5 = require("md5");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const axios = require("axios");
 const fs = require("fs");
@@ -13,14 +12,6 @@ const Promocode = require("../models/Promocode");
 const { timerJoin } = require("../utils/Timer");
 const { uploadImage } = require("../utils/uploadImage");
 const JWT_SECRET = process.env.JWT_SECRET || "santosh";
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.MAIL_USER || "",
-    pass: process.env.MAIL_PASSWORD || "",
-  },
-});
-const otp = () => String(Math.floor(100000 + Math.random() * 900000));
 const num = (v) => {
   const n = Number(v);
   return Number.isFinite(n) ? n : 0;
@@ -52,7 +43,7 @@ exports.registerUser = async (req, res) => {
       userId,
       name: "Unknown",
       email: e,
-      password: md5(password),
+      password: await bcrypt.hash(password, 12),
       plane_password: password,
       country,
       currency,
@@ -65,7 +56,22 @@ exports.registerUser = async (req, res) => {
       httpOnly: true,
       maxAge: 604800000,
       secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+
+      // Share auth cookie between:
+      // lotterry.marinclub.site
+      // lotterry.trade.marinclub.site
+      domain:
+        process.env.NODE_ENV === "production"
+          ? ".marinclub.site"
+          : undefined,
+
+      // HTTPS production cross-subdomain requests
+      sameSite:
+        process.env.NODE_ENV === "production"
+          ? "none"
+          : "lax",
+
+      path: "/",
     });
     return res
       .status(201)
@@ -89,26 +95,38 @@ exports.loginUser = async (req, res) => {
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
-    if (u.password !== md5(password))
+    const passwordOk = await bcrypt.compare(password, u.password);
+    if (!passwordOk)
       return res
         .status(401)
         .json({ success: false, message: "Invalid username and password" });
-    if (!u.otp || String(u.otp) !== String(code))
-      return res.status(401).json({ success: false, message: "Invalid OTP" });
-    if (u.otpExpiresAt && u.otpExpiresAt < new Date())
-      return res.status(401).json({ success: false, message: "OTP expired" });
     const token = jwt.sign({ userId: u.userId, email: u.email }, JWT_SECRET, {
       expiresIn: "7d",
     });
     await User.updateOne(
       { _id: u._id },
-      { $set: { token, otp: null, otpExpiresAt: null } },
+      { $set: { token } },
     );
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 604800000,
       secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+
+      // Share auth cookie between:
+      // lotterry.marinclub.site
+      // lotterry.trade.marinclub.site
+      domain:
+        process.env.NODE_ENV === "production"
+          ? ".marinclub.site"
+          : undefined,
+
+      // HTTPS production cross-subdomain requests
+      sameSite:
+        process.env.NODE_ENV === "production"
+          ? "none"
+          : "lax",
+
+      path: "/",
     });
     return res.json({ success: true, message: "Login successful", token });
   } catch (e) {
@@ -168,71 +186,43 @@ exports.getWithdrawlHistory = async (req, res) => {
       .json({ success: false, error: "Internal server error" });
   }
 };
-exports.sendOtp = async (req, res) => {
-  try {
-    const e = String(req.body.email || "")
-      .trim()
-      .toLowerCase();
-    if (!e)
-      return res
-        .status(400)
-        .json({ success: false, message: "Email is required" });
-    const u = await User.findOne({ email: e });
-    if (!u)
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found" });
-    const code = otp();
-    await User.updateOne(
-      { _id: u._id },
-      { $set: { otp: code, otpExpiresAt: new Date(Date.now() + 600000) } },
-    );
-    await transporter.sendMail({
-      from: process.env.MAIL_FROM || process.env.MAIL_USER,
-      to: e,
-      subject: "Password Reset OTP",
-      text: `Your OTP for password reset is: ${code}. It is valid for 10 minutes.`,
-    });
-    return res.json({ success: true, message: "OTP sent successfully" });
-  } catch (e) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Server error", error: e.message });
-  }
-};
 exports.verifyOtpAndUpdatePassword = async (req, res) => {
   try {
-    const { email, newPassword, otp: code, oldPassword } = req.body;
-    if (!email || !newPassword)
+    const { email, newPassword, oldPassword } = req.body;
+
+    if (!email || !newPassword || !oldPassword)
       return res.status(400).json({
         success: false,
-        message: "Email and new password are required",
+        message: "Email, old password and new password are required",
       });
-    if ((!code && !oldPassword) || (code && oldPassword))
-      return res.status(400).json({
-        success: false,
-        message: "Provide either OTP or old password, not both",
-      });
-    const u = await User.findOne({ email: String(email).trim().toLowerCase() });
+
+    const u = await User.findOne({
+      email: String(email).trim().toLowerCase(),
+    });
+
     if (!u)
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
-    if (code) {
-      if (!u.otp || String(u.otp) !== String(code))
-        return res.status(400).json({ success: false, message: "Invalid OTP" });
-      if (u.otpExpiresAt && u.otpExpiresAt < new Date())
-        return res.status(400).json({ success: false, message: "OTP expired" });
-    } else if (u.password !== md5(oldPassword))
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid old password" });
-    const p = md5(newPassword);
-    if (u.password === p)
+
+    const oldPasswordOk = await bcrypt.compare(oldPassword, u.password);
+
+    if (!oldPasswordOk)
+      return res.status(400).json({
+        success: false,
+        message: "Invalid old password",
+      });
+
+    const samePassword = await bcrypt.compare(newPassword, u.password);
+
+    if (samePassword)
       return res.status(400).json({
         success: false,
         message: "New password must be different from old password",
       });
+
+    const p = await bcrypt.hash(newPassword, 12);
+
     await User.updateOne(
       { _id: u._id },
       {
@@ -242,18 +232,22 @@ exports.verifyOtpAndUpdatePassword = async (req, res) => {
           otp: null,
           otpExpiresAt: null,
         },
-      },
+      }
     );
+
     return res.json({
       success: true,
       message: "Password updated successfully",
     });
   } catch (e) {
-    return res
-      .status(500)
-      .json({ success: false, message: "Server error", error: e.message });
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: e.message,
+    });
   }
 };
+
 exports.recharge = async (req, res) => {
   try {
     const id = uid(req),
@@ -556,7 +550,23 @@ exports.logout = async (req, res) => {
         { userId: Number(req.user.userId) },
         { $set: { token: "" } },
       );
-    res.clearCookie("token");
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+
+      domain:
+        process.env.NODE_ENV === "production"
+          ? ".marinclub.site"
+          : undefined,
+
+      sameSite:
+        process.env.NODE_ENV === "production"
+          ? "none"
+          : "lax",
+
+      path: "/",
+    });
+
     if (req.session) req.session.destroy(() => {});
     return res.json({ success: true, message: "Logout successful" });
   } catch (e) {

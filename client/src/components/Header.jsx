@@ -161,16 +161,21 @@ const Header = ({ children }) => {
     },
   ];
 
+  const MAIN_LOGIN_URL =
+    "https://lotterry.marinclub.site/login";
+
   const handleLogout = async () => {
     try {
       await dispatch(logout()).unwrap();
+
       setIsSidebarOpen(false);
-      navigate("/login");
+
+      // Main domain login
+      window.location.replace(MAIN_LOGIN_URL);
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
-
   const isActiveRoute = (path) => {
     if (path === "/") {
       return location.pathname === "/";
@@ -333,20 +338,18 @@ border border-[#FFD75A] shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px
               {/* Home */}
               <Link
                 to="/"
-                className={`flex flex-col items-center justify-center text-[10px] transition-all duration-500 relative ${
-                  location.pathname === "/"
+                className={`flex flex-col items-center justify-center text-[10px] transition-all duration-500 relative ${location.pathname === "/"
                     ? "text-yellow-600"
                     : "text-gray-500 hover:text-yellow-600"
-                } transform-gpu hover:scale-110 hover:-translate-y-2 hover:rotate-y-6 [transform-style:preserve-3d]`}
+                  } transform-gpu hover:scale-110 hover:-translate-y-2 hover:rotate-y-6 [transform-style:preserve-3d]`}
               >
                 <HomeIcon
                   size={20}
                   strokeWidth={location.pathname === "/" ? 2.5 : 2}
-                  className={`transition-all duration-500 ${
-                    location.pathname === "/"
+                  className={`transition-all duration-500 ${location.pathname === "/"
                       ? "text-yellow-600"
                       : "text-gray-500"
-                  }`}
+                    }`}
                 />
                 <span className="mt-0.5 font-bold text-[10px]">Home</span>
                 {location.pathname === "/" && (
@@ -357,20 +360,18 @@ border border-[#FFD75A] shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px
               {/* Activity */}
               <Link
                 to="https://lotterry.marinclub.site/activity"
-                className={`flex flex-col items-center justify-center text-[10px] transition-all duration-500 relative ${
-                  location.pathname === "/activity"
+                className={`flex flex-col items-center justify-center text-[10px] transition-all duration-500 relative ${location.pathname === "/activity"
                     ? "text-yellow-600"
                     : "text-gray-500 hover:text-yellow-600"
-                } transform-gpu hover:scale-110 hover:-translate-y-2 hover:rotate-y-6 [transform-style:preserve-3d]`}
+                  } transform-gpu hover:scale-110 hover:-translate-y-2 hover:rotate-y-6 [transform-style:preserve-3d]`}
               >
                 <Activity
                   size={20}
                   strokeWidth={location.pathname === "/activity" ? 2.5 : 2}
-                  className={`transition-all duration-500 ${
-                    location.pathname === "/activity"
+                  className={`transition-all duration-500 ${location.pathname === "/activity"
                       ? "text-yellow-600"
                       : "text-gray-500"
-                  }`}
+                    }`}
                 />
                 <span className="mt-0.5 font-bold text-[10px]">Activity</span>
                 {location.pathname === "/activity" && (
@@ -384,20 +385,18 @@ border border-[#FFD75A] shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px
               {/* Wallet */}
               <Link
                 to="https://lotterry.marinclub.site/wallet"
-                className={`flex flex-col items-center justify-center text-[10px] transition-all duration-500 relative ${
-                  location.pathname === "/wallet"
+                className={`flex flex-col items-center justify-center text-[10px] transition-all duration-500 relative ${location.pathname === "/wallet"
                     ? "text-yellow-600"
                     : "text-gray-500 hover:text-yellow-600"
-                } transform-gpu hover:scale-110 hover:-translate-y-2 hover:rotate-y-6 [transform-style:preserve-3d]`}
+                  } transform-gpu hover:scale-110 hover:-translate-y-2 hover:rotate-y-6 [transform-style:preserve-3d]`}
               >
                 <Wallet
                   size={20}
                   strokeWidth={location.pathname === "/wallet" ? 2.5 : 2}
-                  className={`transition-all duration-500 ${
-                    location.pathname === "/wallet"
+                  className={`transition-all duration-500 ${location.pathname === "/wallet"
                       ? "text-yellow-600"
                       : "text-gray-500"
-                  }`}
+                    }`}
                 />
                 <span className="mt-0.5 font-bold text-[10px]">Wallet</span>
                 {location.pathname === "/wallet" && (
@@ -408,20 +407,18 @@ border border-[#FFD75A] shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px
               {/* Profile */}
               <Link
                 to="https://lotterry.marinclub.site/account"
-                className={`flex flex-col items-center justify-center text-[10px] transition-all duration-500 relative ${
-                  location.pathname === "/profile"
+                className={`flex flex-col items-center justify-center text-[10px] transition-all duration-500 relative ${location.pathname === "/profile"
                     ? "text-yellow-600"
                     : "text-gray-500 hover:text-yellow-600"
-                } transform-gpu hover:scale-110 hover:-translate-y-2 hover:rotate-y-6 [transform-style:preserve-3d]`}
+                  } transform-gpu hover:scale-110 hover:-translate-y-2 hover:rotate-y-6 [transform-style:preserve-3d]`}
               >
                 <User
                   size={20}
                   strokeWidth={location.pathname === "/account" ? 2.5 : 2}
-                  className={`transition-all duration-500 ${
-                    location.pathname === "/account"
+                  className={`transition-all duration-500 ${location.pathname === "/account"
                       ? "text-yellow-600"
                       : "text-gray-500"
-                  }`}
+                    }`}
                 />
                 <span className="mt-0.5 font-bold text-[10px]">Account</span>
                 {location.pathname === "/account" && (
@@ -470,9 +467,8 @@ shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px_rgba(210,145,0,0.45)] f
 
       {/* ================= MOBILE SIDEBAR ================= */}
       <div
-        className={`fixed inset-0 z-50 md:hidden transition-all duration-500 ${
-          isSidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
+        className={`fixed inset-0 z-50 md:hidden transition-all duration-500 ${isSidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
         onClick={(e) => {
           if (e.target === e.currentTarget) {
             setIsSidebarOpen(false);
@@ -482,9 +478,8 @@ shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px_rgba(210,145,0,0.45)] f
         <div className="absolute inset-0 bg-black/60 backdrop-blur-md"></div>
         <div
           ref={sidebarRef}
-          className={`fixed left-0 top-0 h-full w-80 bg-white/95 backdrop-blur-xl shadow-2xl transform transition-all duration-500 ease-out ${
-            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-          } perspective-1000`}
+          className={`fixed left-0 top-0 h-full w-80 bg-white/95 backdrop-blur-xl shadow-2xl transform transition-all duration-500 ease-out ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+            } perspective-1000`}
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex flex-col h-full transform-gpu hover:rotate-y-2 transition-all duration-700 [transform-style:preserve-3d]">
@@ -556,11 +551,10 @@ shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px_rgba(210,145,0,0.45)] f
                     key={index}
                     to={item.path}
                     onClick={() => setIsSidebarOpen(false)}
-                    className={`flex items-center gap-3 rounded-2xl px-4 py-3.5 transition-all duration-500 [transform-style:preserve-3d] ${
-                      isActiveRoute(item.path)
+                    className={`flex items-center gap-3 rounded-2xl px-4 py-3.5 transition-all duration-500 [transform-style:preserve-3d] ${isActiveRoute(item.path)
                         ? "bg-gradient-to-r from-yellow-400/20 to-orange-400/20 text-yellow-600 border border-yellow-200/30 transform-gpu scale-105 shadow-lg shadow-yellow-500/15"
                         : "text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-yellow-50/60 hover:to-orange-50/60 transform-gpu hover:translate-x-2 hover:scale-105"
-                    }`}
+                      }`}
                   >
                     <item.icon
                       size={20}
