@@ -1,6 +1,6 @@
 const Bet = require("../models/TradeBet");
 const Trade = require("../models/Trade");
-const User = require("../models/User");
+const User = require("../models/authmodel");
 const Admin = require("../models/TradeAdmin");
 const websocket = require("../config/websocket");
 const num = (v) => (Number.isFinite(Number(v)) ? Number(v) : 0);
