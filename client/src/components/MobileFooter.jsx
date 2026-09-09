@@ -1,187 +1,151 @@
-import { useState } from "react";
-import { BsThreeDots } from "react-icons/bs";
-import {
-  FaChartArea,
-  FaHistory,
-  FaQuestionCircle,
-  FaUser,
-} from "react-icons/fa";
-import { RxCross1 } from "react-icons/rx";
-import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router";
-import { toast } from "react-toastify";
-import { getUser, Logout } from "../Redux/Reducer/authReducer";
-import Top from "./top";
+import { Activity, Gift, HomeIcon, Star, User, Wallet } from "lucide-react";
+import { Link } from "react-router";
 
 export default function MobileFooter() {
-  const [activeMenu, setActiveMenu] = useState(false);
-  const [top, setTop] = useState(false);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const navItems = [
-    { id: "gallery", icon: FaChartArea, label: "Gallery", href: "/SideNavbar" },
-    { id: "help", icon: FaQuestionCircle, label: "Help", href: "/support" },
-    {
-      id: "user",
-      icon: FaUser,
-      label: "Profile",
-      href: "/Deposite?trading=Account",
-    },
-    {
-      id: "trophy",
-      icon: FaHistory,
-      label: "History",
-      href: "/Deposite?trading=Trades",
-      notifications: 4,
-    },
-    // { id: "more", icon: FaWallet, label: "More", href: "/Deposite?trading=Withdrawal" },
-  ];
-
-  const handleLogout = () => {
-    dispatch(Logout()).then((res) => {
-      if (res?.payload?.success) {
-        setActiveMenu(false);
-        localStorage.removeItem("token");
-        toast.success(res.payload.message);
-        dispatch(getUser());
-        window.location.reload();
-        navigate("/");
-      } else {
-        toast.error(res.payload.message);
-      }
-    });
-  };
-
-  const handlenavigate = (path) => {
-    setActiveMenu(false);
-    navigate(path);
-  };
-
   return (
     <>
-      <footer className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E7D7AF] h-14 flex items-center justify-around px-2 z-50 lg:hidden shadow-[0_-3px_12px_rgba(126,92,20,0.10)]">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-
-          return (
-            <>
-              <span
-                key={item.id}
-                onClick={() => handlenavigate(item.href)}
-                className="relative flex flex-col items-center justify-center cursor-pointer"
+      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden perspective-1000">
+        <div className="relative mx-auto max-w-full">
+          <div className="relative h-[72px] bg-white/95 backdrop-blur-xl rounded-t-3xl border-t border-white/40 shadow-[0_-8px_40px_rgba(0,0,0,0.08)] transform-gpu translate-y-0 transition-all duration-700 [transform-style:preserve-3d]">
+            {/* Grid Layout - 5 columns */}
+            <div className="grid grid-cols-5 h-full w-full">
+              {/* Home */}
+              <Link
+                to="/"
+                className={`flex flex-col items-center justify-center text-[10px] transition-all duration-500 relative ${
+                  location.pathname === "/"
+                    ? "text-yellow-600"
+                    : "text-gray-500 hover:text-yellow-600"
+                } transform-gpu hover:scale-110 hover:-translate-y-2 hover:rotate-y-6 [transform-style:preserve-3d]`}
               >
-                <Icon className="h-6 w-6 text-[#B8860B]" />
-                <span className="sr-only">{item.label}</span>
-              </span>
-            </>
-          );
-        })}
+                <HomeIcon
+                  size={20}
+                  strokeWidth={location.pathname === "/" ? 2.5 : 2}
+                  className={`transition-all duration-500 ${
+                    location.pathname === "/"
+                      ? "text-yellow-600"
+                      : "text-gray-500"
+                  }`}
+                />
+                <span className="mt-0.5 font-bold text-[10px]">Home</span>
+                {location.pathname === "/" && (
+                  <div className="absolute top-[3.5rem] w-8 h-1 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full shadow-lg shadow-yellow-500/40 animate-pulse-slow"></div>
+                )}
+              </Link>
 
-        <span
-          onClick={() => setActiveMenu(!activeMenu)}
-          className="relative flex flex-col items-center justify-center cursor-pointer"
-        >
-          <BsThreeDots className="h-6 w-6 text-[#B8860B]" />
-          <span className="sr-only">More</span>
-        </span>
-      </footer>
+              {/* Activity */}
+              <Link
+                to="/activity"
+                className={`flex flex-col items-center justify-center text-[10px] transition-all duration-500 relative ${
+                  location.pathname === "/activity"
+                    ? "text-yellow-600"
+                    : "text-gray-500 hover:text-yellow-600"
+                } transform-gpu hover:scale-110 hover:-translate-y-2 hover:rotate-y-6 [transform-style:preserve-3d]`}
+              >
+                <Activity
+                  size={20}
+                  strokeWidth={location.pathname === "/activity" ? 2.5 : 2}
+                  className={`transition-all duration-500 ${
+                    location.pathname === "/activity"
+                      ? "text-yellow-600"
+                      : "text-gray-500"
+                  }`}
+                />
+                <span className="mt-0.5 font-bold text-[10px]">Activity</span>
+                {location.pathname === "/activity" && (
+                  <div className="absolute top-[3.5rem] w-8 h-1 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full shadow-lg shadow-yellow-500/40 animate-pulse-slow"></div>
+                )}
+              </Link>
 
-      <div
-        className={`fixed bg-white z-20 top-0 h-[100vh] transform w-full ${
-          activeMenu ? "translate-x-[0%]" : "-translate-x-[100%]"
-        } transition-transform duration-300`}
-      >
-        <div className="flex flex-col h-[90vh] w-full">
-          <h2 className="text-3xl font-semibold text-[#2F281D] p-4 border-b border-[#E7D7AF] bg-gradient-to-r from-white via-[#FFFDF8] to-[#FBF5E8]">
-            More
-          </h2>
+              {/* Empty Space for Floating Button */}
+              <div></div>
 
-          <div className="px-3 pt-3">
-            <ul className="space-y-2">
-              <li className="p-3 bg-[#FBF6E9] border border-[#E7D7AF] rounded-xl shadow-[0_2px_8px_rgba(126,92,20,0.06)]">
-                <span
-                  onClick={() => setTop(true)}
-                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-[#8A6514] cursor-pointer"
-                >
-                  Top
-                </span>
-              </li>
+              {/* Wallet */}
+              <Link
+                to="/wallet"
+                className={`flex flex-col items-center justify-center text-[10px] transition-all duration-500 relative ${
+                  location.pathname === "/wallet"
+                    ? "text-yellow-600"
+                    : "text-gray-500 hover:text-yellow-600"
+                } transform-gpu hover:scale-110 hover:-translate-y-2 hover:rotate-y-6 [transform-style:preserve-3d]`}
+              >
+                <Wallet
+                  size={20}
+                  strokeWidth={location.pathname === "/wallet" ? 2.5 : 2}
+                  className={`transition-all duration-500 ${
+                    location.pathname === "/wallet"
+                      ? "text-yellow-600"
+                      : "text-gray-500"
+                  }`}
+                />
+                <span className="mt-0.5 font-bold text-[10px]">Wallet</span>
+                {location.pathname === "/wallet" && (
+                  <div className="absolute top-[3.5rem] w-8 h-1 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full shadow-lg shadow-yellow-500/40 animate-pulse-slow"></div>
+                )}
+              </Link>
 
-              <li className="p-3 bg-[#FBF6E9] border border-[#E7D7AF] rounded-xl shadow-[0_2px_8px_rgba(126,92,20,0.06)]">
-                <Link
-                  to="/Deposite?trading=Deposit"
-                  onClick={() => setActiveMenu(false)}
-                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-[#8A6514]"
-                >
-                  Deposit
-                </Link>
-              </li>
+              {/* Profile */}
+              <Link
+                to="/account"
+                className={`flex flex-col items-center justify-center text-[10px] transition-all duration-500 relative ${
+                  location.pathname === "/profile"
+                    ? "text-yellow-600"
+                    : "text-gray-500 hover:text-yellow-600"
+                } transform-gpu hover:scale-110 hover:-translate-y-2 hover:rotate-y-6 [transform-style:preserve-3d]`}
+              >
+                <User
+                  size={20}
+                  strokeWidth={location.pathname === "/account" ? 2.5 : 2}
+                  className={`transition-all duration-500 ${
+                    location.pathname === "/account"
+                      ? "text-yellow-600"
+                      : "text-gray-500"
+                  }`}
+                />
+                <span className="mt-0.5 font-bold text-[10px]">Account</span>
+                {location.pathname === "/account" && (
+                  <div className="absolute top-[3.5rem] w-8 h-1 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full shadow-lg shadow-yellow-500/40 animate-pulse-slow"></div>
+                )}
+              </Link>
+            </div>
 
-              <li className="p-3 bg-[#FBF6E9] border border-[#E7D7AF] rounded-xl shadow-[0_2px_8px_rgba(126,92,20,0.06)]">
-                <Link
-                  to="/Deposite?trading=Withdrawal"
-                  onClick={() => setActiveMenu(false)}
-                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-[#8A6514]"
-                >
-                  Withdrawal
-                </Link>
-              </li>
-
-              <li className="p-3 bg-[#FBF6E9] border border-[#E7D7AF] rounded-xl shadow-[0_2px_8px_rgba(126,92,20,0.06)]">
-                <Link
-                  to="/Deposite?trading=Transactions"
-                  onClick={() => setActiveMenu(false)}
-                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-[#8A6514]"
-                >
-                  Transactions
-                </Link>
-              </li>
-
-              <li className="p-3 bg-[#FBF6E9] border border-[#E7D7AF] rounded-xl shadow-[0_2px_8px_rgba(126,92,20,0.06)]">
-                <Link
-                  to="/Deposite?trading=Trades"
-                  onClick={() => setActiveMenu(false)}
-                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-[#8A6514]"
-                >
-                  Trades
-                </Link>
-              </li>
-
-              <li className="p-3 bg-[#FBF6E9] border border-[#E7D7AF] rounded-xl shadow-[0_2px_8px_rgba(126,92,20,0.06)]">
-                <Link
-                  to="/Deposite?trading=Account"
-                  onClick={() => setActiveMenu(false)}
-                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-[#8A6514]"
-                >
-                  Account
-                </Link>
-              </li>
-
-              <li className="p-3 bg-[#FFF4F1] border border-[#F0D2CC] rounded-xl shadow-[0_2px_8px_rgba(120,55,45,0.05)]">
-                <span
-                  onClick={handleLogout}
-                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-[#D94B3F] cursor-pointer"
-                >
-                  Logout
-                </span>
-              </li>
-            </ul>
+            {/* Floating Promo Button with 3D */}
+            <Link
+              to="/promo"
+              className="absolute left-1/2 -translate-x-1/2 -top-7 group perspective-1000"
+            >
+              <div className="relative transform-gpu transition-all duration-700 hover:rotate-y-12 hover:scale-110 hover:-translate-y-2 [transform-style:preserve-3d]">
+                <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-500 blur-2xl opacity-30 group-hover:opacity-70 transition-all duration-700 animate-pulse-slow"></div>
+                <div className="w-[78px] h-[78px] rounded-full bg-white shadow-2xl relative">
+                  <div
+                    className="w-full h-full rounded-full bg-gradient-to-b from-[#FFF19A] via-[#FFC928] to-[#D99200]
+border border-[#FFD75A]
+shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px_rgba(210,145,0,0.45)]"
+                  >
+                    <div
+                      className="w-full h-full rounded-full bg-gradient-to-b from-[#FFF19A] via-[#FFC928] to-[#D99200]
+border border-[#FFD75A]
+shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px_rgba(210,145,0,0.45)] flex flex-col items-center justify-center group-hover:scale-105 transition-all duration-500"
+                    >
+                      <Gift
+                        size={22}
+                        className="text-black"
+                        strokeWidth={2.3}
+                      />
+                      <span className="text-[9px] font-bold text-black leading-none mt-0.5">
+                        Promo
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg animate-pulse-slow">
+                  <Star size={10} className="text-white" fill="white" />
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
       </div>
-
-      {top && (
-        <div className="fixed top-0 w-full z-50">
-          <div
-            onClick={() => setTop(false)}
-            className="cursor-pointer absolute right-3 top-4 text-[#8A6514] text-2xl w-9 h-9 rounded-full bg-[#FBF5E5] border border-[#E7D7AF] flex items-center justify-center shadow-sm"
-          >
-            <RxCross1 />
-          </div>
-          <Top />
-        </div>
-      )}
     </>
   );
 }
