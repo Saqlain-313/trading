@@ -21,7 +21,6 @@ import flag1 from "../assets/universalImage/circle-flag-of-usa-free-png.webp";
 import flag6 from "../assets/universalImage/col.webp";
 import flag7 from "../assets/universalImage/turky.webp";
 import ChartSection from "../components/ChartSection";
-import Sidebar from "../components/Sidebar";
 import Top from "../components/top";
 import { getUser } from "../Redux/Reducer/authReducer";
 import {
@@ -304,12 +303,6 @@ const TradeChart = () => {
         isMobile ? "flex-col " : "h-screen"
       }  text-[#222222] bg-white lg:h-[89.5vh] overflow-auto lg:overflow-hidden`}
     >
-      <div className="lg:w-[90px]">
-        <Sidebar
-          topPopupOpen={topPopupOpen}
-          setTopPopupOpen={setTopPopupOpen}
-        />
-      </div>
       <div
         className={`
     transition-all duration-500 ease-in-out
@@ -331,7 +324,7 @@ const TradeChart = () => {
       {/* Control Panel */}
       <div
         className={`${
-          isMobile ? "w-full h-[25vh] justify-center" : "w-1/5"
+          isMobile ? "w-full h-[25vh] justify-center mt-5 " : "w-1/5"
         } flex flex-col space-y-2 md:space-y-4 p-2 md:p-2`}
       >
         {/* Trading Panel */}
@@ -440,7 +433,9 @@ const TradeChart = () => {
               <button
                 disabled={isDisabled}
                 onClick={handleUp}
-                className="bg-gradient-to-b from-[#E9C961] via-[#C99A29] to-[#A97706] hover:from-[#F0D678] hover:via-[#D3A934] hover:to-[#B9850A] text-white px-5 py-2 md:px-10 md:py-3 rounded-[11px] h-[5vh] md:h-[6vh] flex items-center justify-between font-bold space-x-1 md:space-x-2 transition-all text-xs md:text-sm shadow-[inset_0_1px_1px_rgba(255,255,255,0.42),0_3px_8px_rgba(171,124,10,0.25)]"
+                className="bg-gradient-to-b from-[#FFF19A] via-[#FFC928] to-[#D99200]
+border border-[#FFD75A]
+shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px_rgba(210,145,0,0.45)] hover:from-[#F0D678] hover:via-[#D3A934] hover:to-[#B9850A] text-black px-5 py-2 md:px-10 md:py-3 rounded-[11px] h-[5vh] md:h-[6vh] flex items-center justify-between font-bold space-x-1 md:space-x-2 transition-all text-xs md:text-sm"
               >
                 <span>Up</span>
                 <FaArrowUp className="text-xs md:text-sm bg-white/20 size-6 p-1 rounded-full" />
@@ -514,7 +509,7 @@ const TradeChart = () => {
             <button
               className={`flex-1 py-2 md:py-3 flex items-center justify-center rounded text-xs md:text-sm ${
                 activeTab === "trades"
-                  ? "bg-[#D4AF37] text-white"
+                  ? "rounded-lg bg-gradient-to-b from-[#FFF19A] via-[#FFC928] to-[#D99200] border border-[#FFD75A] shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px_rgba(210,145,0,0.45)] text-black"
                   : "hover:bg-[#F3F0E8]"
               } transition-colors`}
               onClick={() => setActiveTab("trades")}
@@ -527,7 +522,7 @@ const TradeChart = () => {
             <button
               className={`flex-1 py-2 md:py-3 flex items-center justify-center text-xs md:text-sm rounded ${
                 activeTab === "orders"
-                  ? "bg-[#D4AF37] text-white"
+                  ? "rounded-lg bg-gradient-to-b from-[#FFF19A] via-[#FFC928] to-[#D99200] border border-[#FFD75A] shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px_rgba(210,145,0,0.45)] text-black"
                   : "hover:bg-[#F3F0E8]"
               } transition-colors`}
               onClick={() => setActiveTab("orders")}

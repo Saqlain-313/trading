@@ -206,8 +206,6 @@ const Header = ({ children }) => {
 
   return (
     <>
-      {/* ================= DESKTOP SIDEBAR ================= */}
-
       {/* ================= MAIN CONTENT ================= */}
       <div className="flex flex-col bg-gradient-to-b from-gray-50 to-white">
         {/* ================= TOP NAVBAR ================= */}
@@ -291,8 +289,7 @@ const Header = ({ children }) => {
                   <Link
                     to="/register"
                     className="flex ml-3 items-center gap-1.5 px-2 py-1.5 rounded-lg bg-gradient-to-b from-[#FFF19A] via-[#FFC928] to-[#D99200]
-border border-[#FFD75A]
-shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px_rgba(210,145,0,0.45)] text-black text-sm"
+border border-[#FFD75A] shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px_rgba(210,145,0,0.45)] text-black text-sm"
                   >
                     <UserPlus size={16} />
                     <span className="hidden sm:inline">REGISTER</span>
