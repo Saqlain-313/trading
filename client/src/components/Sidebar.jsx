@@ -48,7 +48,11 @@ const Sidebar = ({ topPopupOpen, setTopPopupOpen }) => {
         <div>
           <Link
             to="/SideNavbar"
-            className={`flex items-center justify-center size-16 rounded-md text-[#6B6B6B] transition-colors ${activeTab === "Trade" ? "bg-[#C9A227] text-white" : "bg-transparent hover:bg-[#F8F5EA] hover:text-[#C9A227]"}`}
+            className={`flex items-center justify-center size-16 rounded-md transition-all ${
+              activeTab === "Trade"
+                ? "text-white bg-gradient-to-b from-[#E9C961] via-[#C99A29] to-[#A97808] shadow-[inset_0_1px_1px_rgba(255,255,255,0.45),0_4px_10px_rgba(169,120,8,0.25)]"
+                : "text-[#6B6B6B] bg-transparent hover:bg-[#FBF5E5] hover:text-[#B8860B]"
+            }`}
           >
             <div
               onClick={() => handleTabClick("Trade")}
@@ -64,7 +68,11 @@ const Sidebar = ({ topPopupOpen, setTopPopupOpen }) => {
         <div>
           <button
             onClick={() => handlePopupToggle("top")}
-            className={`flex items-center justify-center size-16 rounded-md text-[#6B6B6B] transition-colors ${activeTab === "top" && topPopupOpen ? "bg-[#C9A227] text-white" : "bg-transparent hover:bg-[#F8F5EA] hover:text-[#C9A227]"}`}
+            className={`flex items-center justify-center size-16 rounded-md transition-all ${
+              activeTab === "top" && topPopupOpen
+                ? "text-white bg-gradient-to-b from-[#E9C961] via-[#C99A29] to-[#A97808] shadow-[inset_0_1px_1px_rgba(255,255,255,0.45),0_4px_10px_rgba(169,120,8,0.25)]"
+                : "text-[#6B6B6B] bg-transparent hover:bg-[#FBF5E5] hover:text-[#B8860B]"
+            }`}
           >
             <div className="flex flex-col items-center justify-center font-semibold text-xs gap-1">
               <PiRanking className="text-[25px]" />
@@ -76,7 +84,11 @@ const Sidebar = ({ topPopupOpen, setTopPopupOpen }) => {
         {/* Account Button */}
         <Link
           to={"/Deposite?trading=Account"}
-          className={`flex items-center justify-center size-16 rounded-md text-[#6B6B6B] transition-colors ${activeTab === "account" ? "bg-[#C9A227] text-white" : "bg-transparent hover:bg-[#F8F5EA] hover:text-[#C9A227]"}`}
+          className={`flex items-center justify-center size-16 rounded-md transition-all ${
+            activeTab === "account"
+              ? "text-white bg-gradient-to-b from-[#E9C961] via-[#C99A29] to-[#A97808] shadow-[inset_0_1px_1px_rgba(255,255,255,0.45),0_4px_10px_rgba(169,120,8,0.25)]"
+              : "text-[#6B6B6B] bg-transparent hover:bg-[#FBF5E5] hover:text-[#B8860B]"
+          }`}
         >
           <div
             onClick={() => handleTabClick("account")}
@@ -90,7 +102,11 @@ const Sidebar = ({ topPopupOpen, setTopPopupOpen }) => {
         {/* Support Button */}
         <div
           onClick={() => handlePopupToggle("support")}
-          className={`flex items-center justify-center size-16 rounded-md text-[#6B6B6B] transition-colors ${activeTab === "support" ? "bg-[#C9A227] text-white" : "bg-transparent hover:bg-[#F8F5EA] hover:text-[#C9A227]"}`}
+          className={`flex items-center justify-center size-16 rounded-md transition-all ${
+            activeTab === "support"
+              ? "text-white bg-gradient-to-b from-[#E9C961] via-[#C99A29] to-[#A97808] shadow-[inset_0_1px_1px_rgba(255,255,255,0.45),0_4px_10px_rgba(169,120,8,0.25)]"
+              : "text-[#6B6B6B] bg-transparent hover:bg-[#FBF5E5] hover:text-[#B8860B]"
+          }`}
         >
           <div className="flex flex-col items-center justify-center font-semibold text-xs gap-1">
             <TbHelpOctagonFilled className="text-[20px]" />
@@ -102,7 +118,7 @@ const Sidebar = ({ topPopupOpen, setTopPopupOpen }) => {
       <div className="px-2">
         <Link
           to={"/support"}
-          className="flex items-center justify-center size-16 rounded-md text-white transition-colors bg-[#C9A227] hover:bg-[#B08B1E]"
+          className="flex items-center justify-center size-16 rounded-md text-white transition-all bg-gradient-to-b from-[#E9C961] via-[#C99A29] to-[#A97808] shadow-[inset_0_1px_1px_rgba(255,255,255,0.45),0_4px_10px_rgba(169,120,8,0.25)] hover:from-[#F0D678] hover:via-[#D3A934] hover:to-[#B9850A]"
         >
           <div className="flex flex-col items-center justify-center font-semibold text-xs gap-1">
             <PiDotDuotone className="text-2xl text-white" />

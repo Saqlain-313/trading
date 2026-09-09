@@ -4,6 +4,7 @@ import ReactApexChart from "react-apexcharts";
 import {
   FaArrowDown,
   FaArrowUp,
+  FaCaretDown,
   FaPlus,
   FaRegStar,
   FaSearch,
@@ -195,11 +196,11 @@ function ChartSection({ investment }) {
           },
           zoomedArea: {
             fill: {
-              color: "#90CAF9",
+              color: "#D8C28A",
               opacity: 0.4,
             },
             stroke: {
-              color: "#0D47A1",
+              color: "#B8891A",
               opacity: 0.8,
               width: 1,
             },
@@ -346,14 +347,14 @@ function ChartSection({ investment }) {
         yaxis: [
           {
             y: latestClose,
-            borderColor: "#fff",
+            borderColor: "#C89B3C",
             strokeDashArray: 4,
             label: {
               text: `(${latestClose})`,
               style: {
-                color: "#fff",
-                background: "#026fd3",
-                borderColor: "#026fd3",
+                color: "#FFFFFF",
+                background: "#C89B3C",
+                borderColor: "#B8891A",
               },
             },
           },
@@ -361,7 +362,7 @@ function ChartSection({ investment }) {
         xaxis: [
           {
             x: latestPrice,
-            borderColor: "#775DD0",
+            borderColor: "#D2AE55",
             label: {
               style: {
                 color: "#fff",
@@ -371,17 +372,17 @@ function ChartSection({ investment }) {
           },
         ],
       },
-      title: { text: "", align: "left", style: { color: "#e2e8f0" } },
+      title: { text: "", align: "left", style: { color: "#6B5420" } },
       xaxis: {
         type: "datetime",
         min: xAxisRange.min,
         max: xAxisRange.max,
         labels: {
-          style: { colors: "#a0aec0" },
+          style: { colors: "#A17A22" },
           datetimeFormatter: { hour: "HH:mm", minute: "HH:mm:ss" },
         },
-        axisBorder: { color: "#2d3748" },
-        axisTicks: { color: "#2d3748" },
+        axisBorder: { color: "#E1D6BC" },
+        axisTicks: { color: "#E1D6BC" },
         tickPlacement: "on",
         range: undefined, // Let chart auto-calculate range
         tickAmount: "dataPoints", // Show tick for each data point
@@ -402,11 +403,11 @@ function ChartSection({ investment }) {
         max: yAxisRange.max,
         tooltip: { enabled: true },
         labels: {
-          style: { colors: "#a0aec0" },
+          style: { colors: "#A17A22" },
           formatter: (val) => val.toFixed(5),
         },
         forceNiceScale: true,
-        yxisBorder: { color: "#2d3748" },
+        yxisBorder: { color: "#E1D6BC" },
         tickAmount: 8,
         stepSize: 4,
         opposite: true,
@@ -421,7 +422,7 @@ function ChartSection({ investment }) {
         },
       },
       grid: {
-        borderColor: "#252a39",
+        borderColor: "#E9E1CF",
         strokeDashArray: 0,
         xaxis: {
           lines: {
@@ -884,66 +885,104 @@ function ChartSection({ investment }) {
           <div>
             <button
               onClick={() => SetShowButton((prev) => !prev)}
-              className="bg-[#026fd3] rounded-md text-white p-3"
+              className="bg-[#C89B3C] hover:bg-[#B88922] rounded-md text-white p-3"
             >
               <FaPlus className="size-4" />
             </button>
             {showButton && (
               <div className="absolute top-[80px] z-50">
-                <div className="bg-[#FFFFFF] rounded-lg shadow-md w-[750px] h-[600px] overflow-hidden">
+                <div className="bg-white border border-[#D6B65A]/50 rounded-xl shadow-[0_12px_40px_rgba(116,85,15,0.18)] w-[750px] h-[600px] overflow-hidden">
                   {/* Header */}
-                  <div className="flex justify-between items-center p-4 border-b border-gray-700">
-                    <h3 className="font-semibold text-lg text-white">
-                      Select trade pair
-                    </h3>
+                  <div className="flex justify-between items-center px-5 py-4 border-b border-[#E9DFC4] bg-gradient-to-r from-white via-[#FFFDF8] to-[#FBF5E8]">
+                    <div className="flex items-center gap-2">
+                      <div className="w-1 h-6 rounded-full bg-gradient-to-b from-[#E9C961] via-[#C99A29] to-[#A97808]" />
+
+                      <h3 className="font-semibold text-lg text-[#2F281D]">
+                        Select trade pair
+                      </h3>
+                    </div>
+
                     <button
                       onClick={() => SetShowButton(false)}
-                      className="text-white hover:text-gray-100 bg-[#F4F1E8] p-2 rounded"
+                      className="w-9 h-9 flex items-center justify-center rounded-lg
+                     bg-[#F8F2E4]
+                     border border-[#E6D6A8]
+                     text-[#8A6514]
+                     hover:bg-[#D4AF37]
+                     hover:text-white
+                     hover:border-[#C99A29]
+                     transition-all duration-200"
                     >
-                      <FaTimes />
+                      <FaTimes className="text-sm" />
                     </button>
                   </div>
 
                   {/* Filters */}
-                  <div className="flex p-4 border-b border-gray-700">
+                  <div className="flex items-center px-5 py-3 border-b border-[#E9DFC4] bg-white">
                     {filters.map((filter) => (
                       <button
                         key={filter}
-                        className={`px-1 text-xs font-medium ${
+                        className={`relative px-3 py-2 text-xs font-bold tracking-wide transition-all duration-200 ${
                           activeFilter === filter
-                            ? " text-white rounded-sm bg-[#026fd3]"
-                            : "text-white hover:text-gray-100"
+                            ? "text-[#9A6F08]"
+                            : "text-[#777064] hover:text-[#B8860B]"
                         }`}
                         onClick={() => setActiveFilter(filter)}
                       >
                         {filter}
+
+                        {activeFilter === filter && (
+                          <span className="absolute left-3 right-3 bottom-0 h-[2px] rounded-full bg-gradient-to-r from-[#E9C961] via-[#C99A29] to-[#A97808]" />
+                        )}
                       </button>
                     ))}
                   </div>
 
                   {/* Search and Favorites */}
-                  <div className="flex justify-between items-center p-4 border-b border-gray-700">
-                    <div className="flex items-center text-gray-500 border p-1 px-2 rounded-md border-gray-500">
+                  <div className="flex justify-between items-center gap-4 px-5 py-4 border-b border-[#E9DFC4] bg-[#FFFDF9]">
+                    {/* Favorites */}
+                    <div
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-lg
+                     bg-[#FBF5E7]
+                     border border-[#E6D6A8]
+                     text-[#8A6514] text-sm font-semibold"
+                    >
                       {favorites.length > 0 ? (
                         <>
-                          <FaStar className="text-yellow-500 mr-1" />
+                          <FaStar className="text-[#C99A29]" />
                           <span>{favorites.length}</span>
                         </>
                       ) : (
                         <>
-                          <FaRegStar className="mr-1" />
-                          <span>0</span>
+                          <FaRegStar className="text-[#9A907D]" />
+                          <span className="text-[#776F61]">0</span>
                         </>
                       )}
                     </div>
-                    <div className="relative w-[90%]">
+
+                    {/* Search */}
+                    <div className="relative flex-1 max-w-[650px]">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <FaSearch className="text-white" />
+                        <FaSearch className="text-[#B8860B]" />
                       </div>
+
                       <input
                         type="text"
-                        className="block w-full pl-10 pr-3 py-2 border-none rounded-md leading-5 bg-[#F4F1E8] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#026fd3] sm:text-sm"
-                        placeholder="Search"
+                        className="block w-full pl-10 pr-4 py-2.5
+                       border border-[#E4D6B4]
+                       rounded-lg
+                       leading-5
+                       bg-white
+                       text-[#332B20]
+                       placeholder-[#AAA08D]
+                       focus:outline-none
+                       focus:border-[#C99A29]
+                       focus:ring-2
+                       focus:ring-[#D4AF37]/20
+                       shadow-[inset_0_1px_3px_rgba(124,91,19,0.05)]
+                       sm:text-sm
+                       transition-all"
+                        placeholder="Search trade pair..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                       />
@@ -951,41 +990,52 @@ function ChartSection({ investment }) {
                   </div>
 
                   {/* Table */}
-                  <div className="overflow-y-auto h-[calc(400px-0px)]">
-                    <table className="min-w-full divide-y divide-gray-700">
-                      <thead className="bg-[#FFFFFF] sticky top-0">
+                  <div className="overflow-y-auto h-[calc(400px-0px)] scrollbar-thin scrollbar-thumb-[#D4AF37] scrollbar-track-[#F8F4EA]">
+                    <table className="min-w-full divide-y divide-[#ECE3D0]">
+                      {/* Table Header */}
+                      <thead className="bg-[#FCFAF5] sticky top-0 z-10">
                         <tr>
                           <th
                             scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
+                            className="px-6 py-3.5 text-left text-[11px] font-bold
+                           text-[#9A8D77] uppercase tracking-[0.08em]"
                           >
                             Name
                           </th>
+
                           <th
                             scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider hidden md:table-cell"
+                            className="px-6 py-3.5 text-left text-[11px] font-bold
+                           text-[#9A8D77] uppercase tracking-[0.08em]
+                           hidden md:table-cell"
                           >
                             24h change
                           </th>
+
                           <th
                             scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
+                            className="px-6 py-3.5 text-left text-[11px] font-bold
+                           text-[#9A8D77] uppercase tracking-[0.08em]"
                           >
                             Profit 30 sec
                           </th>
+
                           <th
                             scope="col"
-                            className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
+                            className="px-6 py-3.5 text-left text-[11px] font-bold
+                           text-[#9A8D77] uppercase tracking-[0.08em]"
                           >
                             1+ min
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="bg-[#FFFFFF] divide-y divide-gray-700">
+
+                      {/* Table Body */}
+                      <tbody className="bg-white divide-y divide-[#F0E8D8]">
                         {filteredAssets.map((asset, index) => (
                           <tr
                             key={asset.id}
-                            className="hover:bg-[#F8F6F0] cursor-pointer"
+                            className="group hover:bg-gradient-to-r hover:from-[#FFFDF8] hover:to-[#FBF5E8] cursor-pointer transition-all duration-150"
                             onClick={() => {
                               if (index === 0) {
                                 navigate("/SideNavbar");
@@ -995,12 +1045,14 @@ function ChartSection({ investment }) {
                               }
                             }}
                           >
+                            {/* Pair */}
                             <td className="px-6 py-4 whitespace-nowrap">
                               <div className="flex items-center">
                                 <button
-                                  className="mr-2 text-gray-400 hover:text-yellow-400"
+                                  className="mr-3 text-[#A79C89] hover:text-[#C99A29] transition-colors"
                                   onClick={(e) => {
                                     e.stopPropagation();
+
                                     setFavorites((prev) =>
                                       prev.includes(asset.id)
                                         ? prev.filter((id) => id !== asset.id)
@@ -1008,54 +1060,78 @@ function ChartSection({ investment }) {
                                     );
                                   }}
                                 >
-                                  <span>
-                                    <div className="flex items-center relative w-8">
-                                      <img
-                                        src={asset.flag1}
-                                        alt=""
-                                        className="h-5 w-5 overflow-hidden rounded-full object-cover"
-                                      />
-                                      <img
-                                        src={asset.flag2}
-                                        alt=""
-                                        className="h-5 w-5 overflow-hidden rounded-full object-cover absolute left-2.5"
-                                      />
-                                    </div>
-                                  </span>
+                                  <div className="flex items-center relative w-8">
+                                    <img
+                                      src={asset.flag1}
+                                      alt=""
+                                      className="h-5 w-5 overflow-hidden rounded-full object-cover"
+                                    />
+
+                                    <img
+                                      src={asset.flag2}
+                                      alt=""
+                                      className="h-5 w-5 overflow-hidden rounded-full object-cover absolute left-2.5"
+                                    />
+                                  </div>
                                 </button>
+
                                 <div className="flex items-center">
-                                  <span className="text-white">
+                                  <span className="text-[#2F281D] font-semibold text-sm">
                                     {asset.pair}
-                                    <span className="text-gray-400 ml-1">
+
+                                    <span className="text-[#988E7D] ml-1 font-normal">
                                       ({asset.type})
                                     </span>
                                   </span>
                                 </div>
                               </div>
                             </td>
+
+                            {/* 24h Change */}
                             <td className="px-6 py-4 whitespace-nowrap hidden md:table-cell">
                               <div
-                                className={`flex items-center ${
+                                className={`flex items-center font-semibold ${
                                   asset.change >= 0
-                                    ? "text-green-500"
-                                    : "text-red-500"
+                                    ? "text-[#149B58]"
+                                    : "text-[#E0574D]"
                                 }`}
                               >
                                 {asset.change >= 0 ? (
-                                  <FaArrowUp className="mr-1" />
+                                  <FaArrowUp className="mr-1 text-xs" />
                                 ) : (
-                                  <FaArrowDown className="mr-1" />
+                                  <FaArrowDown className="mr-1 text-xs" />
                                 )}
+
                                 <span>{Math.abs(asset.change)}%</span>
                               </div>
                             </td>
+
+                            {/* Profit 30 sec */}
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-orange-400">
+                              <span
+                                className="inline-flex items-center px-2.5 py-1
+                               rounded-full
+                               bg-[#FBF3DD]
+                               border border-[#E7D28F]
+                               text-[#A87808]
+                               text-xs
+                               font-bold"
+                              >
                                 {asset.payout1}%
                               </span>
                             </td>
+
+                            {/* 1+ min */}
                             <td className="px-6 py-4 whitespace-nowrap">
-                              <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-orange-400">
+                              <span
+                                className="inline-flex items-center px-2.5 py-1
+                               rounded-full
+                               bg-[#FBF3DD]
+                               border border-[#E7D28F]
+                               text-[#A87808]
+                               text-xs
+                               font-bold"
+                              >
                                 {asset.payout2}%
                               </span>
                             </td>
@@ -1072,23 +1148,100 @@ function ChartSection({ investment }) {
           <div className="bg-[#FBFAF7] rounded py-1 px-2 flex items-center justify-between">
             <div
               onClick={() => SetShowButton((prev) => !prev)}
-              className="flex items-center gap-2 cursor-pointer"
+              className="
+    flex items-center justify-between
+    w-full
+    h-[64px]
+    px-3
+    cursor-pointer
+    rounded-xl
+    bg-gradient-to-r from-white via-[#FFFDF9] to-[#FBF6E9]
+    border border-[#DCC27A]
+    shadow-[0_3px_12px_rgba(145,108,24,0.12)]
+    hover:shadow-[0_4px_16px_rgba(145,108,24,0.18)]
+    hover:border-[#C9A33A]
+    transition-all duration-200
+  "
             >
-              <div className="flex items-center relative w-8">
-                <img
-                  src={flag1}
-                  alt=""
-                  className="h-5 w-5 overflow-hidden rounded-full object-cover"
-                />
-                <img
-                  src={flag2}
-                  alt=""
-                  className="h-5 w-5 overflow-hidden rounded-full object-cover absolute left-2.5"
-                />
+              {/* LEFT SIDE */}
+              <div className="flex items-center min-w-0">
+                {/* Flags */}
+                <div className="relative flex items-center w-[42px] h-[30px] mr-3">
+                  <img
+                    src={flag1}
+                    alt=""
+                    className="
+          absolute left-0
+          w-7 h-7
+          rounded-full
+          object-cover
+          border-2 border-white
+          shadow-[0_2px_5px_rgba(0,0,0,0.12)]
+          z-10
+        "
+                  />
+
+                  <img
+                    src={flag2}
+                    alt=""
+                    className="
+          absolute left-[15px]
+          w-7 h-7
+          rounded-full
+          object-cover
+          border-2 border-white
+          shadow-[0_2px_5px_rgba(0,0,0,0.12)]
+        "
+                  />
+                </div>
+
+                {/* Pair Name */}
+                <div className="flex flex-col justify-center leading-none">
+                  <span className="text-[18px] font-bold text-[#2D281F] tracking-tight">
+                    USD/JPY
+                  </span>
+
+                  <span className="mt-1 text-[13px] font-medium text-[#8F887A]">
+                    OTC
+                  </span>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <span className="font-semibold text-sm">USD/JPY (OTC)</span>
-                <div className="text-[#ffa723] font-semibold text-sm">93%</div>
+
+              {/* RIGHT SIDE */}
+              <div className="flex items-center gap-3">
+                {/* 93% */}
+                <div
+                  className=" -mt-3 m-2
+        min-w-[47px]
+        h-[29px]
+        px-3
+        flex items-center justify-center
+        rounded-[10px]
+        bg-gradient-to-b
+        from-[#E8CB68]
+        via-[#C99A29]
+        to-[#A97708]
+        text-white
+        text-[13px]
+        font-bold
+        shadow-[inset_0_1px_1px_rgba(255,255,255,0.45),0_3px_7px_rgba(169,120,8,0.22)]
+      "
+                >
+                  93%
+                </div>
+
+                {/* Dropdown */}
+                <div
+                  className="
+        w-8 h-8
+        flex items-center justify-center
+        rounded-full
+        bg-[#FBF5E6]
+        border border-[#E5D19A]
+      "
+                >
+                  <FaCaretDown className="text-[#A97808] text-[18px]" />
+                </div>
               </div>
             </div>
 
@@ -1103,7 +1256,7 @@ function ChartSection({ investment }) {
                           className="relative bg-[#FBFAF7] rounded-md"
                         >
                           <div className="flex">
-                            <div className="text-white px-7 flex flex-col p-1 items-start">
+                            <div className="text-[#333333] px-7 flex flex-col p-1 items-start">
                               <div>{item.pair}</div>
                               <div>{item.payout1}%</div>
                             </div>
@@ -1118,7 +1271,7 @@ function ChartSection({ investment }) {
                             }}
                             className="p-1 rounded-full absolute top-0 right-0"
                           >
-                            <FaWindowClose className="h-3 w-3 text-white" />
+                            <FaWindowClose className="h-3 w-3 text-[#333333]" />
                           </button>
                         </div>
                       ))}
@@ -1138,14 +1291,15 @@ function ChartSection({ investment }) {
         <div className="flex justify-center items-center gap-4 mb-2 absolute top-10 right-4 z-10 opacity-100">
           <button
             onClick={handleMoveLeft}
-            className="bg-[#026fd3] hover:bg-blue-600 text-white rounded-full p-1 shadow-lg transition"
+            className="bg-gradient-to-b from-[#E9C961] via-[#C99A29] to-[#A97808] hover:from-[#F0D678] hover:via-[#D3A934] hover:to-[#B9850A] text-white rounded-full p-1 shadow-[inset_0_1px_1px_rgba(255,255,255,0.45),0_3px_8px_rgba(169,120,8,0.25)] transition-all"
             title="View older candles"
           >
             <ChevronLeft className="md:h-5 md:w-5 w-4 h-4" />
           </button>
+
           <button
             onClick={handleMoveRight}
-            className="bg-[#026fd3] hover:bg-blue-600 text-white rounded-full p-1 shadow-lg transition"
+            className="bg-gradient-to-b from-[#E9C961] via-[#C99A29] to-[#A97808] hover:from-[#F0D678] hover:via-[#D3A934] hover:to-[#B9850A] text-white rounded-full p-1 shadow-[inset_0_1px_1px_rgba(255,255,255,0.45),0_3px_8px_rgba(169,120,8,0.25)] transition-all"
             title="View newer candles"
           >
             <ChevronRight className="md:h-5 md:w-5 w-4 h-4" />
@@ -1178,7 +1332,7 @@ function ChartSection({ investment }) {
             </p>
             <button
               onClick={() => setComming(false)}
-              className="mt-4 px-4 py-2 bg-green-500 text-white rounded "
+              className="mt-4 px-4 py-2 bg-green-500 text-[#333333] rounded "
             >
               OK
             </button>
