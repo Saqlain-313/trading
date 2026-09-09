@@ -172,6 +172,7 @@ exports.placeBet = async (req, res) => {
       { $inc: { balance: -a } },
       { new: true },
     );
+    console.log(user)
     if (!user) {
       if (!(await User.exists({ userId: id })))
         return res.status(400).json({ message: "User Not Found" });
