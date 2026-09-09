@@ -2,16 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-
-body{
-  background-color: #1c1f2d;
+body {
+  background-color: white;
 }
 
 /* scrollbar */
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
-
 }
 .hide-scrollbar {
   -ms-overflow-style: none;
@@ -37,17 +35,19 @@ body{
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
-.login-bg{
-  background: url('./assets/universalImage/bg-sing-form.png') no-repeat center center fixed;
+.login-bg {
+  background: url("./assets/universalImage/bg-sing-form.png") no-repeat center
+    center fixed;
   background-size: cover;
 }
-.bg-disc{
-  background: url('./assets/universalImage/e24d8105d045f4014524.png') no-repeat center;
+.bg-disc {
+  background: url("./assets/universalImage/e24d8105d045f4014524.png") no-repeat
+    center;
   background-size: cover;
 }
 
 input[type="number"] {
-  -moz-appearance: textfield ;
+  -moz-appearance: textfield;
 }
 
 /* Chrome, Safari, Edge, Opera */
@@ -62,12 +62,11 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-
 .no-spinner {
   -moz-appearance: textfield; /* Firefox */
 }
-@media screen and (max-width:500px)  {
-  .max-w-md{
+@media screen and (max-width: 500px) {
+  .max-w-md {
     width: 23rem;
   }
 }

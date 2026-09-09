@@ -548,7 +548,7 @@ const TradeChart = () => {
             {activeTab === "trades" ? (
               <div className="h-full flex flex-col justify-start text-[#777777]">
                 <div className="overflow-x-hidden w-full text-center">
-                  <div className="w-full text-sm text-[#555555] space-y-3 overflow-auto h-[23vh]">
+                  <div className="w-full text-sm text-[#555555] space-y-3 overflow-auto h-[40vh]">
                     {traderhistory?.map((trade) => (
                       <div className="border-b border-[#E5DFCFFF]">
                         <div className="flex items-center gap-2">
@@ -604,7 +604,7 @@ const TradeChart = () => {
             ) : (
               <div className="h-full flex flex-col justify-start text-[#777777]">
                 <div className="overflow-x-hidden w-full text-center">
-                  <div className="w-full text-sm text-[#555555] space-y-3 overflow-auto h-[23vh]">
+                  <div className="w-full text-sm text-[#555555] space-y-3 overflow-auto h-[40vh]">
                     {pendingResult?.map((trade) => (
                       <div className="border-b border-[#E5DFCFFF]">
                         <div className="flex items-center gap-2">
@@ -778,7 +778,7 @@ const TradeChart = () => {
             ) : (
               <div className="h-full flex flex-col justify-start text-[#777777]">
                 <div className="overflow-x-hidden w-full text-center">
-                  <div className="w-full text-sm text-[#555555] space-y-3 overflow-auto h-[23vh]">
+                  <div className="w-full text-sm text-[#555555] space-y-3 overflow-auto h-[40vh]">
                     {pendingResult?.map((trade) => (
                       <div className="border-b border-[#E5DFCFFF]">
                         <div className="flex items-center gap-2">
