@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import { FaExchangeAlt, FaQuestionCircle, FaUser } from "react-icons/fa";
-import TradeChart from "./TradeChart";
-import Top from "../components/top";
+import { useState } from "react";
+import { FaQuestionCircle, FaUser } from "react-icons/fa";
 import { GoGraph } from "react-icons/go";
 import { Link } from "react-router";
+import Top from "../components/top";
+import TradeChart from "./TradeChart";
 
 const SideNavbar = () => {
   const [isopen, SetIsopen] = useState("Trade");

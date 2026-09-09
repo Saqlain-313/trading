@@ -1,8 +1,6 @@
-import { ChevronDown, Plus, ChevronLeft, ChevronRight } from "lucide-react";
-import { useState, useEffect, useRef, useMemo } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ReactApexChart from "react-apexcharts";
-import { useDispatch, useSelector } from "react-redux";
-import { getBetGrapgResult } from "../Redux/Reducer/betReducer";
 import {
   FaArrowDown,
   FaArrowUp,
@@ -13,14 +11,16 @@ import {
   FaTimes,
   FaWindowClose,
 } from "react-icons/fa";
-import flag1 from "../assets/universalImage/circle-flag-of-usa-free-png.webp";
-import flag2 from "../assets/universalImage/circle-flag-of-japan-free-png.webp";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
 import flag3 from "../assets/universalImage/Bangladesh-512.webp";
 import flag4 from "../assets/universalImage/brazil.webp";
 import flag5 from "../assets/universalImage/can.webp";
+import flag2 from "../assets/universalImage/circle-flag-of-japan-free-png.webp";
+import flag1 from "../assets/universalImage/circle-flag-of-usa-free-png.webp";
 import flag6 from "../assets/universalImage/col.webp";
 import flag7 from "../assets/universalImage/turky.webp";
-import { useNavigate } from "react-router";
+import { getBetGrapgResult } from "../Redux/Reducer/betReducer";
 import { subscribeSocket } from "../Redux/socket";
 
 function ChartSection({ investment }) {
@@ -37,9 +37,9 @@ function ChartSection({ investment }) {
   });
   const [touchState, setTouchState] = useState({
     startDistance: null,
-    startRange: null
+    startRange: null,
   });
-  
+
   const [zoomOutStep, setZoomOutStep] = useState(2); // values: 0, 1, 2
 
   // const dragState = useRef({ isDragging: false, startX: 0, startRange: null });
@@ -156,7 +156,7 @@ function ChartSection({ investment }) {
       chart: {
         type: "candlestick",
         height: 1000,
-        background: "#1c1f2d",
+        background: "#FFFFFF",
         animations: {
           enabled: true,
           easing: "easeinout",
@@ -188,11 +188,11 @@ function ChartSection({ investment }) {
           type: "xy",
           autoScaleYaxis: true,
           limits: {
-    y: {
-      min: 0.00100, // Minimum y-axis range
-      max: undefined
-    }
-  },
+            y: {
+              min: 0.001, // Minimum y-axis range
+              max: undefined,
+            },
+          },
           zoomedArea: {
             fill: {
               color: "#90CAF9",
@@ -213,7 +213,7 @@ function ChartSection({ investment }) {
             const zoomRange = newMax - newMin;
             const center = (newMin + newMax) / 2;
             const visibleData = transformedData.filter(
-              (d) => d.x >= xaxis.min && d.x <= xaxis.max
+              (d) => d.x >= xaxis.min && d.x <= xaxis.max,
             );
 
             // Calculate min/max of visible prices
@@ -307,7 +307,7 @@ function ChartSection({ investment }) {
               dragState.current.chartWidth;
 
             const transformedDataTimes = transformedData.map((d) =>
-              d.x.getTime()
+              d.x.getTime(),
             );
             const oldestCandle = Math.min(...transformedDataTimes);
             const newestCandle =
@@ -442,34 +442,34 @@ function ChartSection({ investment }) {
         y: { formatter: (val) => val.toFixed(5) },
       },
     }),
-    [xAxisRange, transformedData]
+    [xAxisRange, transformedData],
   );
 
   // Calculate dynamic offset based on zoom level
   const getDynamicOffset = () => {
     // Base minimum offset to ensure at least 0.00100 difference
-    const baseMinOffset = 0.00050; // Half of 0.00100 since we add to both sides
-    
+    const baseMinOffset = 0.0005; // Half of 0.00100 since we add to both sides
+
     // Calculate dynamic offset based on visible price range
     if (transformedData.length === 0) return baseMinOffset;
-  
+
     const visibleData = transformedData.filter(
-      (d) => d.x.getTime() >= xAxisRange.min && d.x.getTime() <= xAxisRange.max
+      (d) => d.x.getTime() >= xAxisRange.min && d.x.getTime() <= xAxisRange.max,
     );
-  
+
     if (visibleData.length === 0) return baseMinOffset;
-  
+
     // Calculate price range of visible candles
     let minPrice = Infinity;
     let maxPrice = -Infinity;
-  
+
     visibleData.forEach((d) => {
       minPrice = Math.min(minPrice, d.y[2]); // Low price
       maxPrice = Math.max(maxPrice, d.y[1]); // High price
     });
-  
+
     const priceRange = maxPrice - minPrice;
-    
+
     // Use whichever is larger - the actual price range or our minimum offset
     return Math.max(baseMinOffset, priceRange * 0.5); // 0.5 because we add to both sides
   };
@@ -491,53 +491,54 @@ function ChartSection({ investment }) {
       console.log("Updated Y-Axis Range:", {
         min: latestClose - dynamicOffset,
         max: latestClose + dynamicOffset,
-        "value": (latestClose + dynamicOffset) - (latestClose - dynamicOffset) ,
+        value: latestClose + dynamicOffset - (latestClose - dynamicOffset),
       });
     }
   }, [transformedData, zoomOutStep, latestPrice]);
-// Update the y-axis range calculation useEffect
-useEffect(() => {
-  if (transformedData.length === 0 || !xAxisRange.min || !xAxisRange.max) return;
+  // Update the y-axis range calculation useEffect
+  useEffect(() => {
+    if (transformedData.length === 0 || !xAxisRange.min || !xAxisRange.max)
+      return;
 
-  const visibleData = transformedData.filter(
-    (d) => d.x.getTime() >= xAxisRange.min && d.x.getTime() <= xAxisRange.max
-  );
+    const visibleData = transformedData.filter(
+      (d) => d.x.getTime() >= xAxisRange.min && d.x.getTime() <= xAxisRange.max,
+    );
 
-  if (visibleData.length === 0) return;
+    if (visibleData.length === 0) return;
 
-  // Calculate min/max prices from visible candles
-  let minY = Infinity;
-  let maxY = -Infinity;
+    // Calculate min/max prices from visible candles
+    let minY = Infinity;
+    let maxY = -Infinity;
 
-  visibleData.forEach((d) => {
-    minY = Math.min(minY, d.y[2]); // Low price
-    maxY = Math.max(maxY, d.y[1]); // High price
-  });
+    visibleData.forEach((d) => {
+      minY = Math.min(minY, d.y[2]); // Low price
+      maxY = Math.max(maxY, d.y[1]); // High price
+    });
 
-  // Calculate the required padding to ensure at least 0.00100 difference
-  const currentRange = maxY - minY;
-  const minRequiredRange = 0.00100;
-  
-  let padding = 0;
-  if (currentRange < minRequiredRange) {
-    padding = (minRequiredRange - currentRange) / 2;
-  } else {
-    // Add 5% padding if we're already above minimum range
-    padding = currentRange * 0.05;
-  }
+    // Calculate the required padding to ensure at least 0.00100 difference
+    const currentRange = maxY - minY;
+    const minRequiredRange = 0.001;
 
-  // Apply the padding
-  minY -= padding;
-  maxY += padding;
+    let padding = 0;
+    if (currentRange < minRequiredRange) {
+      padding = (minRequiredRange - currentRange) / 2;
+    } else {
+      // Add 5% padding if we're already above minimum range
+      padding = currentRange * 0.05;
+    }
 
-  // Ensure we don't go below 0 for currency pairs
-  minY = Math.max(0, minY);
+    // Apply the padding
+    minY -= padding;
+    maxY += padding;
 
-  setYAxisRange({ 
-    min: Number(minY.toFixed(5)), 
-    max: Number(maxY.toFixed(5)) 
-  });
-}, [xAxisRange, transformedData]);
+    // Ensure we don't go below 0 for currency pairs
+    minY = Math.max(0, minY);
+
+    setYAxisRange({
+      min: Number(minY.toFixed(5)),
+      max: Number(maxY.toFixed(5)),
+    });
+  }, [xAxisRange, transformedData]);
 
   // Remove the existing useEffect that sets yAxisRange based on latestClose
 
@@ -577,7 +578,7 @@ useEffect(() => {
           initialAnimationDone.current = true;
           animateCandle(
             transformedData[transformedData.length - 1],
-            transformedData.length - 1
+            transformedData.length - 1,
           );
 
           console.log("animation callled");
@@ -625,7 +626,7 @@ useEffect(() => {
     const initialData = transformedData.map((c, idx) =>
       idx === candleIndex
         ? { ...c, y: [c.y[0], c.y[0], c.y[0], c.y[0]] }
-        : { ...c }
+        : { ...c },
     );
 
     setSeries([{ data: initialData }]);
@@ -734,32 +735,33 @@ useEffect(() => {
     if (e.touches.length === 2) {
       const distance = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
+        e.touches[0].clientY - e.touches[1].clientY,
       );
       setTouchState({
         startDistance: distance,
-        startRange: { ...xAxisRange }
+        startRange: { ...xAxisRange },
       });
     }
   };
-  
+
   const handleTouchMove = (e) => {
     if (e.touches.length === 2 && touchState.startDistance) {
       const currentDistance = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
-        e.touches[0].clientY - e.touches[1].clientY
+        e.touches[0].clientY - e.touches[1].clientY,
       );
-      
+
       const scale = currentDistance / touchState.startDistance;
       const range = touchState.startRange.max - touchState.startRange.min;
       const newRange = range / scale;
-      
+
       // Calculate center point
-      const centerX = (touchState.startRange.min + touchState.startRange.max) / 2;
-      
+      const centerX =
+        (touchState.startRange.min + touchState.startRange.max) / 2;
+
       setXAxisRange({
         min: centerX - newRange / 2,
-        max: centerX + newRange / 2
+        max: centerX + newRange / 2,
       });
     }
   };
@@ -770,11 +772,11 @@ useEffect(() => {
         e.preventDefault();
       }
     };
-    
-    document.addEventListener('touchmove', preventDefault, { passive: false });
-    
+
+    document.addEventListener("touchmove", preventDefault, { passive: false });
+
     return () => {
-      document.removeEventListener('touchmove', preventDefault);
+      document.removeEventListener("touchmove", preventDefault);
     };
   }, []);
 
@@ -860,7 +862,7 @@ useEffect(() => {
   const filteredAssets = assets.filter(
     (asset) =>
       asset.pair.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      activeFilter === "CURRENCIES"
+      activeFilter === "CURRENCIES",
   );
 
   const FlagIcon = ({ code }) => (
@@ -888,7 +890,7 @@ useEffect(() => {
             </button>
             {showButton && (
               <div className="absolute top-[80px] z-50">
-                <div className="bg-[#191919] rounded-lg shadow-md w-[750px] h-[600px] overflow-hidden">
+                <div className="bg-[#FFFFFF] rounded-lg shadow-md w-[750px] h-[600px] overflow-hidden">
                   {/* Header */}
                   <div className="flex justify-between items-center p-4 border-b border-gray-700">
                     <h3 className="font-semibold text-lg text-white">
@@ -896,7 +898,7 @@ useEffect(() => {
                     </h3>
                     <button
                       onClick={() => SetShowButton(false)}
-                      className="text-white hover:text-gray-100 bg-[#2e2d2d] p-2 rounded"
+                      className="text-white hover:text-gray-100 bg-[#F4F1E8] p-2 rounded"
                     >
                       <FaTimes />
                     </button>
@@ -940,7 +942,7 @@ useEffect(() => {
                       </div>
                       <input
                         type="text"
-                        className="block w-full pl-10 pr-3 py-2 border-none rounded-md leading-5 bg-[#3b3b3b] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#026fd3] sm:text-sm"
+                        className="block w-full pl-10 pr-3 py-2 border-none rounded-md leading-5 bg-[#F4F1E8] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#026fd3] sm:text-sm"
                         placeholder="Search"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -951,7 +953,7 @@ useEffect(() => {
                   {/* Table */}
                   <div className="overflow-y-auto h-[calc(400px-0px)]">
                     <table className="min-w-full divide-y divide-gray-700">
-                      <thead className="bg-[#191919] sticky top-0">
+                      <thead className="bg-[#FFFFFF] sticky top-0">
                         <tr>
                           <th
                             scope="col"
@@ -979,11 +981,11 @@ useEffect(() => {
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="bg-[#191919] divide-y divide-gray-700">
+                      <tbody className="bg-[#FFFFFF] divide-y divide-gray-700">
                         {filteredAssets.map((asset, index) => (
                           <tr
                             key={asset.id}
-                            className="hover:bg-[#232323] cursor-pointer"
+                            className="hover:bg-[#F8F6F0] cursor-pointer"
                             onClick={() => {
                               if (index === 0) {
                                 navigate("/SideNavbar");
@@ -1002,7 +1004,7 @@ useEffect(() => {
                                     setFavorites((prev) =>
                                       prev.includes(asset.id)
                                         ? prev.filter((id) => id !== asset.id)
-                                        : [...prev, asset.id]
+                                        : [...prev, asset.id],
                                     );
                                   }}
                                 >
@@ -1067,7 +1069,7 @@ useEffect(() => {
             )}
           </div>
 
-          <div className="bg-[#2b3040] rounded py-1 px-2 flex items-center justify-between">
+          <div className="bg-[#FBFAF7] rounded py-1 px-2 flex items-center justify-between">
             <div
               onClick={() => SetShowButton((prev) => !prev)}
               className="flex items-center gap-2 cursor-pointer"
@@ -1098,7 +1100,7 @@ useEffect(() => {
                       {navbarOpen.slice(0, index).map((item, idx) => (
                         <div
                           key={idx}
-                          className="relative bg-[#2b3040] rounded-md"
+                          className="relative bg-[#FBFAF7] rounded-md"
                         >
                           <div className="flex">
                             <div className="text-white px-7 flex flex-col p-1 items-start">
@@ -1111,7 +1113,7 @@ useEffect(() => {
                               e.stopPropagation();
                               setIndex(index - 1);
                               SetNavbarOpen((prev) =>
-                                prev.filter((_, i) => i !== idx)
+                                prev.filter((_, i) => i !== idx),
                               );
                             }}
                             className="p-1 rounded-full absolute top-0 right-0"
@@ -1167,7 +1169,7 @@ useEffect(() => {
       </div>
       {comming && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#2b3040] p-6 rounded-md text-center shadow-lg max-w-lg w-full">
+          <div className="bg-[#FBFAF7] p-6 rounded-md text-center shadow-lg max-w-lg w-full">
             <h2 className="text-xl font-semibold mb-2">Coming Soon!</h2>
             <p className="text-gray-300">
               This chart is not available at the moment. For technical reasons,

@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
-import { GoGraph } from "react-icons/go";
-import { PiDotDuotone, PiRanking } from "react-icons/pi";
+import { useEffect, useRef, useState } from "react";
+import { FaChartArea, FaUser } from "react-icons/fa";
+import { PiRanking } from "react-icons/pi";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Top from "./top";
-import { FaChartArea, FaUser } from "react-icons/fa";
 
 const Menubar = ({ closeMenu }) => {
   const [activeMenu, setActiveMenu] = useState("Trade");
@@ -11,7 +10,7 @@ const Menubar = ({ closeMenu }) => {
   const popupRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
- 
+
   // Close popup when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -39,35 +38,39 @@ const Menubar = ({ closeMenu }) => {
   }, [location]);
 
   const getMenuClass = (menuName) => {
-    return `flex items-center justify-center size-16 rounded-md transition-colors ${activeMenu === menuName
+    return `flex items-center justify-center size-16 rounded-md transition-colors ${
+      activeMenu === menuName
         ? "text-white bg-[#026fd3]"
-        : "text-gray-300 hover:text-white hover:bg-gray-700"
-      }`;
+        : "text-[#7e828d] hover:text-white hover:bg-[#282a38]"
+    }`;
   };
 
   const getLinkClass = (menuName) => {
-    return `block p-2 hover:bg-gray-700 rounded ${activeMenu === menuName
+    return `block p-2 hover:bg-[#282a38] rounded ${
+      activeMenu === menuName
         ? "text-white bg-[#026fd3]"
-        : "text-gray-300 hover:text-white"
-      }`;
+        : "text-[#7e828d] hover:text-white"
+    }`;
   };
 
   const handlemove = (data) => {
-    navigate(`/Deposite?trading=${data}`)
-    localStorage.setItem("menuOpen", false)
-
-  }
+    navigate(`/Deposite?trading=${data}`);
+    localStorage.setItem("menuOpen", false);
+  };
 
   return (
     <div>
-      <div className="flex flex-col justify-between h-[90vh] w-[200px] bg-[#1c1f2d]">
+      <div className="flex flex-col justify-between h-[90vh] w-[200px] bg-[#191919]">
         <nav className="flex flex-col items-center space-y-2 p-4">
           {/* Trade Button */}
           <div>
             <Link
               to="/SideNavbar"
               className={getMenuClass("Trade")}
-              onClick={() => {setActiveMenu("Trade");closeMenu();}}
+              onClick={() => {
+                setActiveMenu("Trade");
+                closeMenu();
+              }}
             >
               <div className="flex flex-col items-center justify-center font-semibold text-xs gap-1">
                 <FaChartArea className="text-[20px]" />
@@ -98,7 +101,10 @@ const Menubar = ({ closeMenu }) => {
           <Link
             to="/Deposite?trading=Account"
             className={getMenuClass("Account")}
-            onClick={() => { setActiveMenu("Account"); closeMenu(); }}
+            onClick={() => {
+              setActiveMenu("Account");
+              closeMenu();
+            }}
           >
             <div className="flex flex-col items-center justify-center font-semibold text-xs gap-1">
               <FaUser className="text-[20px]" />
@@ -123,7 +129,10 @@ const Menubar = ({ closeMenu }) => {
               <Link
                 to="/Deposite?trading=Withdrawal"
                 className={getLinkClass("Withdrawal")}
-                onClick={() => { setActiveMenu("Withdrawal"); closeMenu(); }}
+                onClick={() => {
+                  setActiveMenu("Withdrawal");
+                  closeMenu();
+                }}
               >
                 Withdrawal
               </Link>
@@ -132,7 +141,10 @@ const Menubar = ({ closeMenu }) => {
               <Link
                 to="/Deposite?trading=Transactions"
                 className={getLinkClass("Transactions")}
-                onClick={() => { setActiveMenu("Transactions"); closeMenu(); }}
+                onClick={() => {
+                  setActiveMenu("Transactions");
+                  closeMenu();
+                }}
               >
                 Transactions
               </Link>
@@ -141,7 +153,10 @@ const Menubar = ({ closeMenu }) => {
               <Link
                 to="/Deposite?trading=Trades"
                 className={getLinkClass("Trades")}
-                onClick={() => { setActiveMenu("Trades"); closeMenu(); }}
+                onClick={() => {
+                  setActiveMenu("Trades");
+                  closeMenu();
+                }}
               >
                 Trades
               </Link>
@@ -150,7 +165,10 @@ const Menubar = ({ closeMenu }) => {
               <Link
                 to="/Deposite?trading=Account"
                 className={getLinkClass("Account")}
-                onClick={() => { setActiveMenu("Account"); closeMenu(); }}
+                onClick={() => {
+                  setActiveMenu("Account");
+                  closeMenu();
+                }}
               >
                 Account
               </Link>

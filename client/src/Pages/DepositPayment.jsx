@@ -1,25 +1,16 @@
-import React, { useState, useEffect } from "react";
 import {
-  FaArrowLeft,
-  FaClipboard,
-  FaClipboardCheck,
-  FaExclamationCircle,
-} from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
-import { Recharge } from "../Redux/Reducer/paymentReducer";
-import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router";
-import { LoaderIcon } from "lucide-react";
-import {
-  AlertTriangle,
-  ArrowRight,
   ArrowRightCircle,
-  ChevronDown,
-  ChevronUp,
   DollarSign,
+  LoaderIcon,
   Percent,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { FaArrowLeft, FaExclamationCircle } from "react-icons/fa";
 import { MdContentCopy } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router";
+import { toast } from "react-toastify";
+import { Recharge } from "../Redux/Reducer/paymentReducer";
 
 import img1 from "../assets/universalImage/secure-3dsecure-dark@2x.png";
 import img2 from "../assets/universalImage/secure-securecode-dark@2x.png";
@@ -86,7 +77,7 @@ const DepositPayment = () => {
         utrNo: utr,
         image: image,
         bonus: bonus,
-      })
+      }),
     ).then((res) => {
       if (res.payload.success) {
         toast.success(res.payload.message);
@@ -120,7 +111,7 @@ const DepositPayment = () => {
         {
           method: "POST",
           body: formData,
-        }
+        },
       );
 
       const data = await response.json();
@@ -145,7 +136,7 @@ const DepositPayment = () => {
           <div className="w-full lg:w-[40%] p-6 border-r border-gray-800">
             <h2 className="text-xl font-medium mb-4">Chosen payment method</h2>
 
-            <div className="bg-white rounded p-4 mb-4">
+            <div className="bg-[#1c1f2d] rounded p-4 mb-4">
               <div className="flex items-center gap-2">
                 <div className="bg-gray-100 p-2 rounded-full">
                   <img
@@ -158,7 +149,10 @@ const DepositPayment = () => {
               </div>
             </div>
 
-            <Link to="/Deposite?trading=bounce-page" className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors">
+            <Link
+              to="/Deposite?trading=bounce-page"
+              className="flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors"
+            >
               <FaArrowLeft size={16} />
               <span>Change amount</span>
             </Link>
@@ -195,7 +189,7 @@ const DepositPayment = () => {
             <div className="flex flex-col md:flex-row gap-6">
               {/* QR Code */}
               {console.log("admininfo", admininfo)}
-              <div className="bg-white p-2 w-[200px] h-[200px] flex items-center justify-center">
+              <div className="bg-[#1c1f2d] p-2 w-[200px] h-[200px] flex items-center justify-center">
                 <img
                   src={
                     method === " USD Tether (TRC-20)"
@@ -232,18 +226,24 @@ const DepositPayment = () => {
                         method === " USD Tether (TRC-20)"
                           ? admininfo?.usdt
                           : admininfo?.usdt2,
-                        "address"
+                        "address",
                       )
                     }
                   >
-                 <span><MdContentCopy /></span>   {copying === "address" ? "Copied!" : "Copy address"}
+                    <span>
+                      <MdContentCopy />
+                    </span>{" "}
+                    {copying === "address" ? "Copied!" : "Copy address"}
                   </button>
 
                   <button
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors  flex items-center"
                     onClick={() => handleCopy(amount, "amount")}
                   >
-                      <span><MdContentCopy /></span>   {copying === "amount" ? "Copied!" : "Copy amount"}
+                    <span>
+                      <MdContentCopy />
+                    </span>{" "}
+                    {copying === "amount" ? "Copied!" : "Copy amount"}
                   </button>
                 </div>
               </div>
@@ -258,102 +258,104 @@ const DepositPayment = () => {
         </div>
 
         {/* Right Sidebar */}
-      <div className="w-full lg:w-[25%] border border-gray-200 dark:border-gray-700 p-4 rounded-lg mb-4 shadow-sm bg-white dark:bg-gray-800">
-  <div className="w-full flex flex-col justify-center items-center">
-    {/* QR Code Section */}
-    <div className="w-full">
-      <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 text-center">Payment Verification</h3>
-      
-      <form onSubmit={handleQRCodeSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Transaction ID
-          </label>
-          <input
-            type="text"
-            value={utr}
-            onChange={(e) => setUtr(e.target.value)}
-            placeholder="Enter UTR/Transaction ID"
-            className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
-            required
-          />
-        </div>
+        <div className="w-full lg:w-[25%] border border-gray-200 dark:border-gray-700 p-4 rounded-lg mb-4 shadow-sm bg-[#1c1f2d] dark:bg-gray-800">
+          <div className="w-full flex flex-col justify-center items-center">
+            {/* QR Code Section */}
+            <div className="w-full">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4 text-center">
+                Payment Verification
+              </h3>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Payment Screenshot
-          </label>
-          <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded">
-            <div className="space-y-1 text-center">
-              {image ? (
-                <div className="mt-2">
-                  <img
-                    src={image}
-                    alt="Payment preview"
-                    className="mx-auto max-h-48 rounded object-contain"
+              <form onSubmit={handleQRCodeSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Transaction ID
+                  </label>
+                  <input
+                    type="text"
+                    value={utr}
+                    onChange={(e) => setUtr(e.target.value)}
+                    placeholder="Enter UTR/Transaction ID"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-[#1c1f2d] dark:bg-gray-700 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+                    required
                   />
-                  <button
-                    type="button"
-                    onClick={() => setImage(null)}
-                    className="mt-2 text-xs text-red-500 hover:text-red-700"
-                  >
-                    Remove image
-                  </button>
                 </div>
-              ) : (
-                <>
-                  <svg
-                    className="mx-auto h-12 w-12 text-gray-400"
-                    stroke="currentColor"
-                    fill="none"
-                    viewBox="0 0 48 48"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <div className="flex text-sm text-gray-600 dark:text-gray-400">
-                    <label
-                      htmlFor="file-upload"
-                      className="relative cursor-pointer bg-white dark:bg-gray-800 rounded font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 focus-within:outline-none"
-                    >
-                      <span>Upload a file</span>
-                      <input
-                        id="file-upload"
-                        name="file-upload"
-                        type="file"
-                        required
-                        accept="image/*"
-                        onChange={handleMainImageChange}
-                        className="sr-only"
-                      />
-                    </label>
-                    <p className="pl-1">or drag and drop</p>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Payment Screenshot
+                  </label>
+                  <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded">
+                    <div className="space-y-1 text-center">
+                      {image ? (
+                        <div className="mt-2">
+                          <img
+                            src={image}
+                            alt="Payment preview"
+                            className="mx-auto max-h-48 rounded object-contain"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setImage(null)}
+                            className="mt-2 text-xs text-red-500 hover:text-red-700"
+                          >
+                            Remove image
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <svg
+                            className="mx-auto h-12 w-12 text-gray-400"
+                            stroke="currentColor"
+                            fill="none"
+                            viewBox="0 0 48 48"
+                            aria-hidden="true"
+                          >
+                            <path
+                              d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                              strokeWidth={2}
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                          <div className="flex text-sm text-gray-600 dark:text-gray-400">
+                            <label
+                              htmlFor="file-upload"
+                              className="relative cursor-pointer bg-[#1c1f2d] dark:bg-gray-800 rounded font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 focus-within:outline-none"
+                            >
+                              <span>Upload a file</span>
+                              <input
+                                id="file-upload"
+                                name="file-upload"
+                                type="file"
+                                required
+                                accept="image/*"
+                                onChange={handleMainImageChange}
+                                className="sr-only"
+                              />
+                            </label>
+                            <p className="pl-1">or drag and drop</p>
+                          </div>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            PNG, JPG, GIF up to 5MB
+                          </p>
+                        </>
+                      )}
+                    </div>
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    PNG, JPG, GIF up to 5MB
-                  </p>
-                </>
-              )}
+                </div>
+
+                <button
+                  type="submit"
+                  onClick={handlePayment}
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded shadow-sm text-sm font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-green-500 transition-colors duration-200"
+                >
+                  Verify Payment
+                </button>
+              </form>
             </div>
           </div>
         </div>
-
-        <button
-          type="submit"
-          onClick={handlePayment}
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded shadow-sm text-sm font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-green-500 transition-colors duration-200"
-        >
-          Verify Payment
-        </button>
-      </form>
-    </div>
-  </div>
-</div>
       </div>
       <div className="flex flex-col md:flex-row w-full bg-gray-900 text-white rounded-lg overflow-hidden">
         {/* Left section - Payment info */}
