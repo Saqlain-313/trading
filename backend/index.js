@@ -14,6 +14,7 @@ const adminRoute = require("./routes/TradeadminRoute");
 const betRoute = require("./routes/TradebetRoute");
 const dns = require("dns");
 dns.setServers(['8.8.8.8', '1.1.1.1']);
+const path = require("path");
 
 const {
   createTrade,
@@ -62,12 +63,12 @@ app.use("/api", betRoute);
 // --------------------------------------------------
 // Health Check
 // --------------------------------------------------
-app.get("/", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Server is running",
-  });
-});
+// app.get("/", (req, res) => {
+//   res.status(200).json({
+//     success: true,
+//     message: "Server is running",
+//   });
+// });
 
 app.get("/api/health", (req, res) => {
   res.status(200).json({
@@ -75,6 +76,14 @@ app.get("/api/health", (req, res) => {
     message: "API is working",
     database: "MongoDB",
   });
+});
+
+const userDistPath = path.join(__dirname, "../client/dist");
+app.use(express.static(userDistPath));
+
+
+app.get("/{*path}", (req, res) => {
+  res.sendFile(path.join(userDistPath, "index.html"));
 });
 
 // --------------------------------------------------

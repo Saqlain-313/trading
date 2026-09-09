@@ -1,11 +1,11 @@
 import axios from "axios";
  
 const api = axios.create({
-    baseURL: "http://localhost:4000/api",
-    // baseURL: "/api",
+    // baseURL: "http://localhost:4000/api",
+    baseURL: "/api",
 });
 
 
 export default api;
-export const host = "http://localhost:4000";
-// export const host = "/";
+// export const host = "http://localhost:4000";
+export const host = "/";
