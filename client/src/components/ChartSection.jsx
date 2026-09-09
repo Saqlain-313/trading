@@ -43,8 +43,6 @@ function ChartSection({ investment }) {
 
   const [zoomOutStep, setZoomOutStep] = useState(2); // values: 0, 1, 2
 
-  // const dragState = useRef({ isDragging: false, startX: 0, startRange: null });
-
   const [times, setTime] = useState({
     minute: 0,
     secondtime1: 0,
@@ -68,6 +66,10 @@ function ChartSection({ investment }) {
   const CANDLE_INTERVAL = 10000;
   const candleStartTimeRef = useRef(null);
   const initialAnimationDone = useRef(false);
+
+  // Ref for the chart wrapper div — needed for native (non-passive) wheel listener
+  const chartWrapperRef = useRef(null);
+
   useEffect(() => {
     if (investment > 0) {
       setAnn(investment);
@@ -144,12 +146,23 @@ function ChartSection({ investment }) {
 
   const latestClose = transformedData[transformedData.length - 1]?.y[3];
   const offset = 0.0002;
-  // console.log(offset, 'latestClose')
 
   const [yAxisRange, setYAxisRange] = useState({
     min: latestClose - offset,
     max: latestClose + offset,
   });
+
+  // Keep refs of the latest data/range so the native wheel listener
+  // (registered once) never reads stale closures.
+  const transformedDataRef = useRef(transformedData);
+  useEffect(() => {
+    transformedDataRef.current = transformedData;
+  }, [transformedData]);
+
+  const xAxisRangeRef = useRef(xAxisRange);
+  useEffect(() => {
+    xAxisRangeRef.current = xAxisRange;
+  }, [xAxisRange]);
 
   // Chart options configuration
   const options = useMemo(
@@ -217,31 +230,28 @@ function ChartSection({ investment }) {
               (d) => d.x >= xaxis.min && d.x <= xaxis.max,
             );
 
-            // Calculate min/max of visible prices
             let minPrice = Infinity;
             let maxPrice = -Infinity;
 
             visibleData.forEach((d) => {
-              minPrice = Math.min(minPrice, d.y[1]); // low price
-              maxPrice = Math.max(maxPrice, d.y[2]); // high price
+              minPrice = Math.min(minPrice, d.y[1]);
+              maxPrice = Math.max(maxPrice, d.y[2]);
             });
 
             const stepRatio = [1.0, 1.0, 1.0];
             const currentRatio = stepRatio[zoomOutStep];
             const maxAllowedRange = MAX_ZOOM_RANGE / currentRatio;
 
-            // Determine new zoom step
             let newStep = zoomOutStep;
             if (
               zoomRange > maxAllowedRange &&
               zoomOutStep < stepRatio.length - 1
             ) {
-              newStep = 2; // Zooming OUT
+              newStep = 2;
             } else if (zoomRange < maxAllowedRange && zoomOutStep > 0) {
-              newStep = 2; // Zooming IN
+              newStep = 2;
             }
 
-            // Only update if step changed
             if (newStep !== zoomOutStep) {
               const newRatio = stepRatio[newStep];
 
@@ -252,7 +262,6 @@ function ChartSection({ investment }) {
 
               setZoomOutStep(newStep);
 
-              // Update y-axis range based on new zoom level
               const dynamicOffset = getDynamicOffset();
               const latestClose =
                 transformedData[transformedData.length - 1]?.y[3] ||
@@ -268,10 +277,8 @@ function ChartSection({ investment }) {
           },
 
           events: {
-            // ... existing events ...
             beforeZoom: (chartContext, { xaxis, yaxis }) => {
-              // Maintain a minimum zoom level
-              const minRange = 30 * 60 * 1000; // 30 minutes in milliseconds
+              const minRange = 30 * 60 * 1000;
               if (xaxis.max - xaxis.min < minRange) {
                 return {
                   xaxis: {
@@ -320,7 +327,6 @@ function ChartSection({ investment }) {
               let newMax =
                 dragState.current.startRange.max - deltaX * timePerPixel;
 
-              // Prevent dragging beyond data boundaries
               if (newMax > newestCandle) {
                 newMin -= newMax - newestCandle;
                 newMax = newestCandle;
@@ -384,13 +390,13 @@ function ChartSection({ investment }) {
         axisBorder: { color: "#E1D6BC" },
         axisTicks: { color: "#E1D6BC" },
         tickPlacement: "on",
-        range: undefined, // Let chart auto-calculate range
-        tickAmount: "dataPoints", // Show tick for each data point
+        range: undefined,
+        tickAmount: "dataPoints",
         group: {
           style: {
-            colors: [], // Remove grouping colors
+            colors: [],
           },
-          groups: [], // Remove any grouping
+          groups: [],
         },
       },
       series: [
@@ -448,10 +454,8 @@ function ChartSection({ investment }) {
 
   // Calculate dynamic offset based on zoom level
   const getDynamicOffset = () => {
-    // Base minimum offset to ensure at least 0.00100 difference
-    const baseMinOffset = 0.0005; // Half of 0.00100 since we add to both sides
+    const baseMinOffset = 0.0005;
 
-    // Calculate dynamic offset based on visible price range
     if (transformedData.length === 0) return baseMinOffset;
 
     const visibleData = transformedData.filter(
@@ -460,19 +464,17 @@ function ChartSection({ investment }) {
 
     if (visibleData.length === 0) return baseMinOffset;
 
-    // Calculate price range of visible candles
     let minPrice = Infinity;
     let maxPrice = -Infinity;
 
     visibleData.forEach((d) => {
-      minPrice = Math.min(minPrice, d.y[2]); // Low price
-      maxPrice = Math.max(maxPrice, d.y[1]); // High price
+      minPrice = Math.min(minPrice, d.y[2]);
+      maxPrice = Math.max(maxPrice, d.y[1]);
     });
 
     const priceRange = maxPrice - minPrice;
 
-    // Use whichever is larger - the actual price range or our minimum offset
-    return Math.max(baseMinOffset, priceRange * 0.5); // 0.5 because we add to both sides
+    return Math.max(baseMinOffset, priceRange * 0.5);
   };
 
   useEffect(() => {
@@ -481,22 +483,13 @@ function ChartSection({ investment }) {
       const latestClose =
         transformedData[transformedData.length - 1]?.y[3] || latestPrice;
 
-      console.log("Dynamic Offset:", dynamicOffset);
-      console.log("Latest Close:", latestClose);
-
       setYAxisRange({
         min: latestClose - dynamicOffset,
         max: latestClose + dynamicOffset,
       });
-
-      console.log("Updated Y-Axis Range:", {
-        min: latestClose - dynamicOffset,
-        max: latestClose + dynamicOffset,
-        value: latestClose + dynamicOffset - (latestClose - dynamicOffset),
-      });
     }
   }, [transformedData, zoomOutStep, latestPrice]);
-  // Update the y-axis range calculation useEffect
+
   useEffect(() => {
     if (transformedData.length === 0 || !xAxisRange.min || !xAxisRange.max)
       return;
@@ -507,16 +500,14 @@ function ChartSection({ investment }) {
 
     if (visibleData.length === 0) return;
 
-    // Calculate min/max prices from visible candles
     let minY = Infinity;
     let maxY = -Infinity;
 
     visibleData.forEach((d) => {
-      minY = Math.min(minY, d.y[2]); // Low price
-      maxY = Math.max(maxY, d.y[1]); // High price
+      minY = Math.min(minY, d.y[2]);
+      maxY = Math.max(maxY, d.y[1]);
     });
 
-    // Calculate the required padding to ensure at least 0.00100 difference
     const currentRange = maxY - minY;
     const minRequiredRange = 0.001;
 
@@ -524,15 +515,12 @@ function ChartSection({ investment }) {
     if (currentRange < minRequiredRange) {
       padding = (minRequiredRange - currentRange) / 2;
     } else {
-      // Add 5% padding if we're already above minimum range
       padding = currentRange * 0.05;
     }
 
-    // Apply the padding
     minY -= padding;
     maxY += padding;
 
-    // Ensure we don't go below 0 for currency pairs
     minY = Math.max(0, minY);
 
     setYAxisRange({
@@ -541,21 +529,13 @@ function ChartSection({ investment }) {
     });
   }, [xAxisRange, transformedData]);
 
-  // Remove the existing useEffect that sets yAxisRange based on latestClose
-
-  // console.log("Zoom Out Step:", zoomOutStep);
-  // console.log("Initial X-Axis Range:", xAxisRange);
-
-  // First, update your state to track animation state
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Then modify your main useEffect for data handling
   useEffect(() => {
     if (transformedData?.length > 0) {
       if (!initialAnimationDone.current) {
         initialAnimationDone.current = true;
 
-        // Set initial range
         const lastCandleTime =
           transformedData[transformedData.length - 1].x.getTime();
         const visibleRange = DEFAULT_VISIBLE_CANDLES * CANDLE_INTERVAL;
@@ -564,7 +544,6 @@ function ChartSection({ investment }) {
           max: lastCandleTime + RIGHT_PADDING,
         });
       } else {
-        // Check if we have new data that needs animation
         const shouldAnimate = isInitialFetchDone.current;
 
         if (
@@ -574,30 +553,22 @@ function ChartSection({ investment }) {
           times.secondtime1 === 0 &&
           times.secondtime2 <= 3
         ) {
-          // Animate the newest candle (leftmost)
           animateCandle(transformedData[0], 0);
           initialAnimationDone.current = true;
           animateCandle(
             transformedData[transformedData.length - 1],
             transformedData.length - 1,
           );
-
-          console.log("animation callled");
         } else if (!isAnimating) {
-          // Regular update without animation
           setSeries([{ data: transformedData }]);
         }
 
-        // Always adjust view to show newest data on right
         if (transformedData?.length > 0) {
           const newestCandle = transformedData[transformedData.length - 1];
           const newCandleTime = newestCandle.x.getTime() + RIGHT_PADDING;
 
           const maxZoomRange = 1744393458000 - 1744393888000;
 
-          // Only auto-update range if:
-          // 1. Not in manual pan mode
-          // 2. We have new candles
           if (xAxisRange.min - xAxisRange.max > maxZoomRange) {
             setXAxisRange({
               min: xAxisRange.min + maxZoomRange,
@@ -619,11 +590,9 @@ function ChartSection({ investment }) {
     }
   }, [transformedData, times]);
 
-  // Extract animation logic into a separate function
   const animateCandle = (candle, candleIndex) => {
     setIsAnimating(true);
 
-    // Create initial data with the target candle as a flat line
     const initialData = transformedData.map((c, idx) =>
       idx === candleIndex
         ? { ...c, y: [c.y[0], c.y[0], c.y[0], c.y[0]] }
@@ -633,7 +602,7 @@ function ChartSection({ investment }) {
     setSeries([{ data: initialData }]);
 
     const startTime = Date.now();
-    const duration = 3000; // Shorter duration for smoother animation
+    const duration = 3000;
     const targetClose = candle.y[3];
 
     const animate = () => {
@@ -643,7 +612,7 @@ function ChartSection({ investment }) {
 
       setSeries((prev) => {
         const newData = prev[0].data.map((c, idx) => {
-          if (idx !== candleIndex) return c; // Skip other candles
+          if (idx !== candleIndex) return c;
           return {
             ...c,
             y: [
@@ -668,7 +637,6 @@ function ChartSection({ investment }) {
     requestAnimationFrame(animate);
   };
 
-  // Price movement animation - simplified version
   useEffect(() => {
     if (!isCandleMoving) return;
 
@@ -697,8 +665,6 @@ function ChartSection({ investment }) {
     return () => clearInterval(priceInterval);
   }, [isCandleMoving, latestPrice]);
 
-  // Navigation handlers
-  // Updated navigation handlers
   const handleMoveLeft = () => {
     setIsManualPan(true);
     if (transformedData.length === 0) return;
@@ -756,7 +722,6 @@ function ChartSection({ investment }) {
       const range = touchState.startRange.max - touchState.startRange.min;
       const newRange = range / scale;
 
-      // Calculate center point
       const centerX =
         (touchState.startRange.min + touchState.startRange.max) / 2;
 
@@ -778,6 +743,87 @@ function ChartSection({ investment }) {
 
     return () => {
       document.removeEventListener("touchmove", preventDefault);
+    };
+  }, []);
+
+  // ---- NEW: mouse wheel support (zoom + horizontal pan) ----
+  // Plain vertical scroll  -> zoom in/out (centered on current view)
+  // Shift+scroll / trackpad horizontal swipe -> pan left/right
+  // Registered as a native listener with { passive: false } because React's
+  // synthetic onWheel is passive by default and preventDefault() there is a no-op.
+  useEffect(() => {
+    const wrapper = chartWrapperRef.current;
+    if (!wrapper) return;
+
+    const handleWheel = (e) => {
+      e.preventDefault();
+
+      const data = transformedDataRef.current;
+      if (!data || data.length === 0) return;
+
+      const currentRange = xAxisRangeRef.current;
+      if (currentRange.min == null || currentRange.max == null) return;
+
+      const oldestCandleTime = data[0].x.getTime();
+      const newestCandleTime =
+        data[data.length - 1].x.getTime() + RIGHT_PADDING;
+
+      const isHorizontalIntent =
+        e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY);
+
+      setIsManualPan(true);
+
+      if (isHorizontalIntent) {
+        // ---- PAN LEFT / RIGHT ----
+        const rawDelta = e.shiftKey && e.deltaX === 0 ? e.deltaY : e.deltaX;
+        const span = currentRange.max - currentRange.min;
+        const panAmount = (rawDelta / 100) * (span * 0.08);
+
+        setXAxisRange((prev) => {
+          let newMin = prev.min + panAmount;
+          let newMax = prev.max + panAmount;
+
+          if (newMax > newestCandleTime) {
+            newMin -= newMax - newestCandleTime;
+            newMax = newestCandleTime;
+          }
+          if (newMin < oldestCandleTime) {
+            newMax += oldestCandleTime - newMin;
+            newMin = oldestCandleTime;
+          }
+
+          return { min: newMin, max: newMax };
+        });
+      } else {
+        // ---- ZOOM IN / OUT ----
+        // deltaY > 0 => scrolled down => zoom out; deltaY < 0 => zoom in
+        const zoomFactor = e.deltaY > 0 ? 1.12 : 0.88;
+        const span = currentRange.max - currentRange.min;
+        let newSpan = span * zoomFactor;
+
+        newSpan = Math.min(Math.max(newSpan, MIN_ZOOM_RANGE), MAX_ZOOM_RANGE);
+
+        const center = (currentRange.min + currentRange.max) / 2;
+        let newMin = center - newSpan / 2;
+        let newMax = center + newSpan / 2;
+
+        if (newMax > newestCandleTime) {
+          newMax = newestCandleTime;
+          newMin = newMax - newSpan;
+        }
+        if (newMin < oldestCandleTime) {
+          newMin = oldestCandleTime;
+          newMax = newMin + newSpan;
+        }
+
+        setXAxisRange({ min: newMin, max: newMax });
+      }
+    };
+
+    wrapper.addEventListener("wheel", handleWheel, { passive: false });
+
+    return () => {
+      wrapper.removeEventListener("wheel", handleWheel);
     };
   }, []);
 
@@ -1308,6 +1354,7 @@ function ChartSection({ investment }) {
 
         {/* Main chart */}
         <div
+          ref={chartWrapperRef}
           className="chart-wrapper md:pt-1 h-[50vh] lg:h-[88vh]"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}

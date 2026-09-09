@@ -1,33 +1,24 @@
+import { LogIn, Menu, UserPlus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { FaCaretDown } from "react-icons/fa6";
-import { FiEye, FiLogOut } from "react-icons/fi";
-import { HiOutlineMenuAlt1 } from "react-icons/hi";
-import { IoIosSend } from "react-icons/io";
-import { MdAdd } from "react-icons/md";
-import { RxCross1 } from "react-icons/rx";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import air from "../assets/universalImage/561ff9732b7ce13acc53.png";
-import logo from "../assets/universalImage/bynex logo 1.png";
-import { getUser, Logout } from "../Redux/Reducer/authReducer";
-import Menubar from "./Menubar";
+import { getUser } from "../Redux/Reducer/authReducer";
 
 const Header = () => {
-  const { userInfo, errorMessage, successMessage, loading } = useSelector(
-    (state) => state.auth || {},
-  );
+  const { isAuthenticated, user, loading } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isDropdownOpen2, setIsDropdownOpen2] = useState(false);
   const [activeAccount, setActiveAccount] = useState("demo");
   const [menuOpen, setMenuOpen] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
   const [Active, SetActive] = useState("");
+  const menuButtonRef = useRef(null);
+  const sidebarRef = useRef(null);
 
   const dropdownRef = useRef(null);
 
@@ -35,16 +26,16 @@ const Header = () => {
   // SAFE USER VALUES
   // --------------------------------------------------
 
-  const balance = Number(userInfo?.money ?? 0);
+  // const balance = Number(userInfo?.money ?? 0);
 
-  const formattedBalance = balance.toLocaleString("en-IN", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  // const formattedBalance = balance.toLocaleString("en-IN", {
+  //   minimumFractionDigits: 2,
+  //   maximumFractionDigits: 2,
+  // });
 
-  const userEmail = userInfo?.email ?? "-";
-  const userId = userInfo?.userId ?? "-";
-  const currency = userInfo?.currency ?? "USD";
+  // const userEmail = userInfo?.email ?? "-";
+  // const userId = userInfo?.userId ?? "-";
+  // const currency = userInfo?.currency ?? "USD";
 
   // --------------------------------------------------
   // GET USER
@@ -58,113 +49,25 @@ const Header = () => {
   // ACTIVE / DEPOSIT STATUS
   // --------------------------------------------------
 
-  useEffect(() => {
-    SetActive(userInfo?.deposit ?? "");
-  }, [userInfo]);
-
-  // --------------------------------------------------
-  // TOGGLE MOBILE MENU
-  // --------------------------------------------------
-
-  const toggleMobileMenu = () => {
-    setMenuOpen((prev) => {
-      const newValue = !prev;
-      localStorage.setItem("menuOpen", String(newValue));
-      return newValue;
-    });
-  };
-
-  // --------------------------------------------------
-  // ACCOUNT DROPDOWN
-  // --------------------------------------------------
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev);
-  };
-
-  const toggleDropdown2 = () => {
-    setIsDropdownOpen2((prev) => !prev);
-  };
-
-  // --------------------------------------------------
-  // LOGOUT
-  // --------------------------------------------------
-
-  const handleLogout = async () => {
-    try {
-      const res = await dispatch(Logout());
-
-      if (res?.payload?.success) {
-        localStorage.removeItem("token");
-
-        toast.success(res?.payload?.message || "Logged out successfully");
-
-        dispatch(getUser());
-
-        setIsDropdownOpen(false);
-        setIsDropdownOpen2(false);
-
-        navigate("/");
-        window.location.reload();
-      } else {
-        toast.error(res?.payload?.message || "Logout failed");
-      }
-    } catch (error) {
-      console.error("Logout error:", error);
-      toast.error("Something went wrong while logging out");
-    }
-  };
-
   // --------------------------------------------------
   // CLOSE DROPDOWN OUTSIDE CLICK
   // --------------------------------------------------
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false);
+      if (
+        isSidebarOpen &&
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target) &&
+        menuButtonRef.current &&
+        !menuButtonRef.current.contains(event.target)
+      ) {
+        setIsSidebarOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  // --------------------------------------------------
-  // NAV LINKS
-  // --------------------------------------------------
-
-  const navLinks = [
-    {
-      text: "Demo account",
-      path: "/demo",
-    },
-    {
-      text: "About us",
-      path: "/about",
-    },
-    {
-      text: "FAQ",
-      path: "/faq",
-    },
-    {
-      text: "Blog",
-      path: "/blog",
-    },
-  ];
-
-  // --------------------------------------------------
-  // ACCOUNT CLICK
-  // --------------------------------------------------
-
-  const handleClick = () => {
-    setIsDropdownOpen(false);
-    setIsDropdownOpen2(false);
-    navigate("/SideNavbar");
-  };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isSidebarOpen]);
 
   // --------------------------------------------------
   // TOKEN
@@ -172,514 +75,112 @@ const Header = () => {
 
   const isLoggedIn = Boolean(localStorage.getItem("token"));
 
+  // WINZOX Logo Component
+  const WinzoxLogo = ({ className = "h-48" }) => (
+    <img
+      src="https://i.ibb.co/bRDCrgMB/4f0fb13d-8dd5-44fd-9bfa-d1e47e94d5a7.png"
+      alt="WINZOX"
+      className={`${className} object-contain w-auto`}
+    />
+  );
+
   // --------------------------------------------------
   // RETURN
   // --------------------------------------------------
 
   return (
-    <header className="shadow-md w-full bg-white z-50">
-      <div className="w-[99%] mx-auto flex justify-between items-center p-2 md:p-4">
-        {/* =====================================================
-            LOGO / DESKTOP LEFT
-        ====================================================== */}
-
-        <div className="hidden md:flex items-center gap-[50px]">
-          {Active && (
-            <div className="flex text-[#222222] text-4xl cursor-pointer">
-              {menuOpen ? (
-                <RxCross1 onClick={toggleMobileMenu} />
-              ) : (
-                <HiOutlineMenuAlt1 onClick={toggleMobileMenu} />
-              )}
-            </div>
-          )}
-
-          <Link to="/SideNavbar" className="hidden md:flex gap-[2.2rem]">
-            <img src={logo} alt="Bynexx Logo" className="h-8" />
-
-            {Active && (
-              <span className="text-[15px] font-bold text-[#8A8A8A] opacity-60 mt-2">
-                WEB TRADING PLATFORM
-              </span>
-            )}
-          </Link>
-        </div>
-
-        {/* =====================================================
-            MOBILE HEADER
-        ====================================================== */}
-
-        <div className="block md:hidden">
-          {isLoggedIn ? (
-            <button
-              onClick={toggleDropdown2}
-              className="hover:bg-[#FFFFFF] bg-[#F7F3E8] text-[#222222] px-2 py-1 rounded font-semibold cursor-pointer md:hidden block"
-            >
-              <div className="flex items-center justify-between gap-1">
-                <div className="flex items-center space-x-2">
-                  <IoIosSend className="text-[#C9A227] text-2xl" />
-                </div>
-
-                <div className="text-[#222222] flex items-center gap-2">
-                  <div className="text-sm font-semibold text-[#8A8A8A]">
-                    Live
-                  </div>
-
-                  <div className="text-xs">
-                    {activeAccount === "live"
-                      ? "$ 0.00"
-                      : `$ ${formattedBalance}`}
-                  </div>
-                </div>
-
-                <div
-                  className={`transition-transform duration-300 ${
-                    isDropdownOpen2 ? "rotate-180" : "rotate-0"
-                  }`}
-                >
-                  <FaCaretDown className="text-[#222222] text-xl" />
-                </div>
-              </div>
-            </button>
-          ) : (
-            <img src={logo} alt="Bynexx Logo" className="h-8" />
-          )}
-
-          {/* =================================================
-              MOBILE ACCOUNT DROPDOWN
-          ================================================== */}
-
-          {isDropdownOpen2 && (
-            <div className="absolute left-0 top-7 mt-2 w-96 rounded shadow-lg z-[8888888888] flex p-2 text-sm">
-              {/* LEFT PANEL */}
-              <div className="w-2/3 p-4 bg-[#FFFFFF] rounded">
-                <div className="flex justify-between items-center mb-4 gap-1">
-                  <div className="flex items-center rounded-s-md bg-[#F7F3E8] px-2 w-full">
-                    <IoIosSend className="text-2xl mr-2 text-[#C9A227]" />
-
-                    <div>
-                      <div className="font-bold text-xs text-[#8A8A8A]">
-                        STANDARD:
-                      </div>
-
-                      <div className="text-[#222222]">+0% profit</div>
-                    </div>
-                  </div>
-
-                  <button className="text-[#222222] hover:text-[#8A8A8A] rounded-e-md bg-[#F7F3E8] p-3">
-                    <FiEye className="w-4 h-4" />
-                  </button>
-                </div>
-
-                <div className="mb-4">
-                  <div className="text-[#222222] font-semibold text-sm">
-                    {userEmail}
-                  </div>
-
-                  <span className="text-[#777777] font-semibold">
-                    ID: {userId}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="text-[#222222] font-bold">Currency:</div>
-
-                  <div className="flex items-center">
-                    <span className="font-medium mr-2 text-[#222222]">
-                      {currency}
-                    </span>
-
-                    <button className="text-[#222222] bg-[#FDFBF5] px-3 rounded hover:bg-[#F1EBDC] font-semibold text-sm">
-                      Change
-                    </button>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  {/* LIVE ACCOUNT */}
-
-                  <div
-                    className={`flex items-center p-2 rounded cursor-pointer ${
-                      activeAccount === "live" ? "bg-[#F7F3E8]" : ""
-                    }`}
-                    onClick={handleClick}
-                  >
-                    <div
-                      className={`w-5 h-5 border-2 rounded-full mr-3 ${
-                        activeAccount === "live"
-                          ? "bg-[#C9A227] border-[#C9A227]"
-                          : "border-[#D8D1BD]"
-                      }`}
-                    >
-                      {activeAccount === "live" && (
-                        <div className="w-4 h-4 rounded-full bg-[#FDFBF5] mx-auto my-auto" />
-                      )}
-                    </div>
-
-                    <div>
-                      <div className="text-[#222222] font-medium">
-                        Live Account
-                      </div>
-
-                      <div className="text-[#222222]">$ {formattedBalance}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* =====================================================
-            DESKTOP NAVIGATION
-        ====================================================== */}
-
-        <nav className="hidden md:flex space-x-6">
-          <ul className="flex space-x-6">
-            {/* Navigation links intentionally disabled */}
-          </ul>
-        </nav>
-
-        {/* =====================================================
-            RIGHT SIDE
-        ====================================================== */}
-
-        {!Active ? (
-          <div className="flex items-center gap-3">
-            {/* Language Selector intentionally disabled */}
-          </div>
-        ) : (
-          <div>
-            {/* MOBILE DEPOSIT */}
-
-            <div className="md:hidden">
-              <Link
-                to="/Deposite?trading=Deposit"
-                className="block text-[#222222] hover:text-[#8A8A8A] p-1.5 hover:bg-[#F1EBDC] rounded bg-[#C9A227] font-semibold px-4 text-sm"
-              >
-                Deposit
-              </Link>
-            </div>
-
-            {/* DESKTOP RIGHT */}
-
-            <div className="hidden md:flex items-center space-x-4">
-              {/* =================================================
-                  ACCOUNT DROPDOWN
-              ================================================== */}
-
-              <div className="relative" ref={dropdownRef}>
-                <button
-                  onClick={toggleDropdown}
-                  className="hover:bg-[#FFFFFF] bg-[#F7F3E8] text-[#222222] px-2 py-1 rounded font-semibold cursor-pointer"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center space-x-2">
-                      <IoIosSend className="text-[#C9A227] text-2xl" />
-                    </div>
-
-                    <div className="text-[#222222]">
-                      <div className="text-sm font-semibold text-[#8A8A8A]">
-                        Live Account
-                      </div>
-
-                      <div className="text-xs">
-                        {activeAccount === "live"
-                          ? "$ 0.00"
-                          : `$ ${formattedBalance}`}
-                      </div>
-                    </div>
-
-                    <div
-                      className={`transition-transform duration-300 ${
-                        isDropdownOpen ? "rotate-180" : "rotate-0"
-                      }`}
-                    >
-                      <FaCaretDown className="text-[#222222] text-xl" />
-                    </div>
-                  </div>
-                </button>
-
-                {/* =================================================
-                    DESKTOP DROPDOWN CONTENT
-                ================================================== */}
-
-                {isDropdownOpen && (
-                  <div className="absolute right-0 top-0 mt-2 w-96 bg-[#FFFFFF] rounded shadow-lg z-[8888888888] flex p-2">
-                    {/* LEFT PANEL */}
-
-                    <div className="w-2/3 p-4 bg-[#FDFBF5] rounded">
-                      <div className="flex justify-between items-center mb-4 gap-1">
-                        <div className="flex items-center rounded-s-md bg-[#F7F3E8] px-2 w-full">
-                          <IoIosSend className="text-2xl mr-2 text-[#C9A227]" />
-
-                          <div>
-                            <div className="font-bold text-xs text-[#8A8A8A]">
-                              STANDARD:
-                            </div>
-
-                            <div className="text-[#222222]">+0% profit</div>
-                          </div>
-                        </div>
-
-                        <button className="text-[#222222] hover:text-[#8A8A8A] rounded-e-md bg-[#F7F3E8] p-3">
-                          <FiEye className="w-4 h-4" />
-                        </button>
-                      </div>
-
-                      <div className="mb-4">
-                        <div className="text-[#222222] font-semibold text-sm">
-                          {userEmail}
-                        </div>
-
-                        <span className="text-[#777777] font-semibold">
-                          ID: {userId}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="text-[#222222] font-bold">
-                          Currency:
-                        </div>
-
-                        <div className="flex items-center">
-                          <span className="font-medium mr-2 text-[#222222]">
-                            {currency}
-                          </span>
-
-                          <button className="text-[#222222] bg-[#FDFBF5] px-3 rounded hover:bg-[#F1EBDC] font-semibold text-sm">
-                            Change
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="space-y-3">
-                        {/* LIVE ACCOUNT */}
-
-                        <div
-                          className={`flex items-center p-2 rounded cursor-pointer ${
-                            activeAccount === "live" ? "bg-[#F7F3E8]" : ""
-                          }`}
-                          onClick={handleClick}
-                        >
-                          <div
-                            className={`w-5 h-5 border-2 rounded-full mr-3 ${
-                              activeAccount === "live"
-                                ? "bg-[#C9A227] border-[#C9A227]"
-                                : "border-[#D8D1BD]"
-                            }`}
-                          >
-                            {activeAccount === "live" && (
-                              <div className="w-4 h-4 rounded-full bg-[#FDFBF5] mx-auto my-auto" />
-                            )}
-                          </div>
-
-                          <div>
-                            <div className="text-[#222222] font-medium">
-                              Live Account
-                            </div>
-
-                            <div className="text-[#222222]">
-                              $ {formattedBalance}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* =================================================
-                        RIGHT PANEL
-                    ================================================== */}
-
-                    <div className="w-1/3 bg-[#FFFFFF] rounded-r-md p-2">
-                      <ul className="space-y-3">
-                        <li onClick={() => setIsDropdownOpen(false)}>
-                          <Link
-                            to="/Deposite?trading=Deposit"
-                            className="block text-[#222222] hover:text-[#8A8A8A] p-2 hover:bg-[#F1EBDC] rounded"
-                          >
-                            Deposit
-                          </Link>
-                        </li>
-
-                        <li onClick={() => setIsDropdownOpen(false)}>
-                          <Link
-                            to="/Deposite?trading=Withdrawal"
-                            className="block text-[#222222] hover:text-[#8A8A8A] p-2 hover:bg-[#F1EBDC] rounded"
-                          >
-                            Withdrawal
-                          </Link>
-                        </li>
-
-                        <li onClick={() => setIsDropdownOpen(false)}>
-                          <Link
-                            to="/Deposite?trading=Transactions"
-                            className="block text-[#222222] hover:text-[#8A8A8A] p-2 hover:bg-[#F1EBDC] rounded"
-                          >
-                            Transactions
-                          </Link>
-                        </li>
-
-                        <li onClick={() => setIsDropdownOpen(false)}>
-                          <Link
-                            to="/Deposite?trading=Trades"
-                            className="block text-[#222222] hover:text-[#8A8A8A] p-2 hover:bg-[#F1EBDC] rounded"
-                          >
-                            Trades
-                          </Link>
-                        </li>
-
-                        <li onClick={() => setIsDropdownOpen(false)}>
-                          <Link
-                            to="/Deposite?trading=Account"
-                            className="block text-[#222222] hover:text-[#8A8A8A] p-2 hover:bg-[#F1EBDC] rounded"
-                          >
-                            Account
-                          </Link>
-                        </li>
-
-                        <li className="border-t border-[#D8D1BD] pt-3">
-                          <button
-                            onClick={handleLogout}
-                            className="flex items-center text-[#B04A3A] hover:text-[#8E3528] w-full p-2"
-                          >
-                            <FiLogOut className="mr-2" />
-                            <span>Logout</span>
-                          </button>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* =================================================
-                  DEPOSIT / WITHDRAWAL
-              ================================================== */}
-
-              <div className="flex items-center gap-3">
-                <Link
-                  to="/Deposite?trading=Deposit"
-                  className="bg-[#C9A227] hover:bg-[#B8941F] text-[#222222] px-4 py-2 rounded font-semibold flex items-center gap-2"
-                >
-                  <MdAdd className="text-xl" />
-                  Deposit
-                </Link>
-
-                <Link
-                  to="/Deposite?trading=Withdrawal"
-                  className="bg-[#E6E1D4] hover:bg-[#F1EBDC] px-4 py-2 rounded text-[#222222] font-semibold"
-                >
-                  Withdrawal
-                </Link>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* =====================================================
-            MOBILE MENU BUTTON
-        ====================================================== */}
-
-        {/* <button
-          className="md:hidden text-[#222222] text-2xl bg-[#F7F3E8] p-2 rounded"
-          onClick={toggleMobileMenu}
-        >
-          <RxHamburgerMenu />
-        </button> */}
-      </div>
-
-      {/* =====================================================
-          MOBILE MENU
-      ====================================================== */}
-
-      {isMobileMenuOpen && (
-        <div className="absolute md:hidden bg-[#FFFFFF] shadow-lg z-50 w-full mx-auto">
-          <div className="container mx-auto p-4">
-            <div className="flex flex-col space-y-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.text}
-                  to={link.path}
-                  className="text-[#222222] hover:text-[#C9A227]"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {link.text}
-                </Link>
-              ))}
-            </div>
-
-            <div className="mt-6 flex flex-col space-y-4">
-              <Link
-                to="/"
-                className="text-[#222222] hover:text-[#C9A227]"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Log in
-              </Link>
-
-              <Link
-                to="/"
-                className="bg-[#C9A227] text-[#222222] px-4 py-2 rounded hover:bg-[#C9A227] text-center"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Sign up
-              </Link>
-            </div>
-
-            <div className="mt-6 flex justify-between">
-              <Link
-                to="/Deposite?trading=Deposit"
-                className="bg-[#C9A227] hover:bg-[#B8941F] text-[#222222] px-4 py-2 rounded font-semibold flex items-center gap-2"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <MdAdd className="text-xl" />
-                Deposit
-              </Link>
-
-              <Link
-                to="/Deposite?trading=Withdrawal"
-                className="bg-[#E6E1D4] hover:bg-[#F1EBDC] px-4 py-2 rounded text-[#222222] font-semibold"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Withdrawal
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* =====================================================
-          SIDE MENUBAR
-      ====================================================== */}
-
-      {menuOpen && (
-        <div className="absolute bg-[#FFFFFF] shadow-lg z-50 w-full mx-auto">
-          <Menubar closeMenu={() => setMenuOpen(false)} />
-        </div>
-      )}
-
-      {/* =====================================================
-          BONUS BANNER
-      ====================================================== */}
-
-      {Number(Active) <= 0 && (
-        <div className="bg-disc rounded-full absolute top-3 left-1/2 -translate-x-1/2 hidden md:block">
-          <Link
-            to="/Deposite?trading=Deposit"
-            className="flex justify-between items-center gap-2 text-[#222222] font-semibold p-2 px-4"
+    <div className="h-16 border-b border-white/40 bg-white/80 backdrop-blur-xl sticky top-0 z-40 shadow-lg shadow-gray-100/50 transform-gpu">
+      <div className="h-full flex items-center px-4 sm:px-6">
+        {/* Left - Menu Button & Logo */}
+        <div className="flex items-center gap-2 md:gap-4">
+          {/* Mobile Menu Button */}
+          <button
+            ref={menuButtonRef}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsSidebarOpen(!isSidebarOpen);
+            }}
+            className="md:hidden text-gray-700 hover:text-yellow-500 transition-all duration-500 p-2 -ml-2 hover:bg-gradient-to-r hover:from-yellow-50/60 hover:to-orange-50/60 rounded-2xl transform-gpu hover:scale-110 hover:rotate-y-6 [transform-style:preserve-3d]"
+            aria-label="Toggle menu"
           >
-            <img src={air} alt="air" className="h-8 w-auto" />
+            <Menu size={22} />
+          </button>
 
-            <p>Get a 30% bonus on your first deposit</p>
-
-            <p className="bg-[#E6E1D4] rounded-full text-[#222222] text-sm p-2">
-              30%
-            </p>
+          {/* Logo - Always Left Aligned */}
+          <Link
+            to="/"
+            className="flex items-center transform-gpu hover:scale-105 transition-all duration-500"
+          >
+            <WinzoxLogo className="h-12 md:h-10" />
           </Link>
         </div>
-      )}
-    </header>
+
+        {/* Center - Empty for spacing */}
+        <div className="flex-1"></div>
+
+        {/* Right - Login & Register Buttons */}
+        <div className="flex items-center gap-2">
+          {isAuthenticated ? (
+            <>
+              {/* Desktop Avatar/Name */}
+              <Link
+                to="/account"
+                className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl text-black hover:shadow-2xl transition-all duration-500"
+              >
+                <img
+                  src={getAvatar()}
+                  alt={getUserDisplayName()}
+                  className="w-7 h-7 rounded-full object-cover border-2 border-yellow-400 shadow-lg transform-gpu hover:scale-110 transition-all duration-300"
+                  onError={(e) => {
+                    e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      getUserDisplayName(),
+                    )}&background=FBBF24&color=fff&size=128`;
+                  }}
+                />
+                <span className="text-sm font-bold">
+                  {getUserDisplayName()}
+                </span>
+              </Link>
+
+              {/* Mobile Avatar only */}
+              <Link to="/account" className="md:hidden flex items-center">
+                <img
+                  src={getAvatar()}
+                  alt={getUserDisplayName()}
+                  className="w-8 h-8 rounded-full object-cover border-2 border-yellow-400 shadow-lg transform-gpu hover:scale-110 transition-all duration-300"
+                  onError={(e) => {
+                    e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      getUserDisplayName(),
+                    )}&background=FBBF24&color=fff&size=128`;
+                  }}
+                />
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg border border-gray-400 text-black text-sm"
+              >
+                <LogIn size={16} />
+                <span className="hidden sm:inline">LOGIN</span>
+                <span className="sm:hidden">Login</span>
+              </Link>
+              <Link
+                to="/register"
+                className="flex ml-3 items-center gap-1.5 px-2 py-1.5 rounded-lg bg-gradient-to-b from-[#FFF19A] via-[#FFC928] to-[#D99200]
+border border-[#FFD75A]
+shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px_rgba(210,145,0,0.45)] text-black text-sm"
+              >
+                <UserPlus size={16} />
+                <span className="hidden sm:inline">REGISTER</span>
+                <span className="sm:hidden">Register</span>
+              </Link>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
