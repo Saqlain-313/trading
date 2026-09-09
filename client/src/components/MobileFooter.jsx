@@ -57,9 +57,10 @@ export default function MobileFooter() {
     setActiveMenu(false);
     navigate(path);
   };
+
   return (
     <>
-      <footer className="fixed bottom-0 left-0 right-0 bg-[#1a1c25] h-14 flex items-center justify-around px-2 z-50 lg:hidden">
+      <footer className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E7D7AF] h-14 flex items-center justify-around px-2 z-50 lg:hidden shadow-[0_-3px_12px_rgba(126,92,20,0.10)]">
         {navItems.map((item) => {
           const Icon = item.icon;
 
@@ -68,109 +69,99 @@ export default function MobileFooter() {
               <span
                 key={item.id}
                 onClick={() => handlenavigate(item.href)}
-                className="relative flex flex-col items-center justify-center"
+                className="relative flex flex-col items-center justify-center cursor-pointer"
               >
-                <Icon className={`h-6 w-6  text-white`} />
+                <Icon className="h-6 w-6 text-[#B8860B]" />
                 <span className="sr-only">{item.label}</span>
               </span>
             </>
           );
         })}
+
         <span
           onClick={() => setActiveMenu(!activeMenu)}
-          className="relative flex flex-col items-center justify-center"
+          className="relative flex flex-col items-center justify-center cursor-pointer"
         >
-          <BsThreeDots className={`h-6 w-6  text-white`} />
+          <BsThreeDots className="h-6 w-6 text-[#B8860B]" />
           <span className="sr-only">More</span>
         </span>
       </footer>
+
       <div
-        className={`fixed bg-[#1c1f2d] z-20 top-0 h-[100vh] transform w-full ${activeMenu ? "translate-x-[0%]" : "-translate-x-[100%]"} transition-transform duration-300`}
+        className={`fixed bg-white z-20 top-0 h-[100vh] transform w-full ${
+          activeMenu ? "translate-x-[0%]" : "-translate-x-[100%]"
+        } transition-transform duration-300`}
       >
-        <div className="flex flex-col h-[90vh] w-full ">
-          {/* <nav className="flex flex-col items-center space-y-2 p-4">
-          <div>
-            <Link
-              to="/SideNavbar"
-              onClick={() => setActiveMenu(false)}
-            >
-              <div className="flex flex-col items-center justify-center font-semibold text-xs gap-1">
-                <FaChartArea className="text-[20px]" />
-                <span>TRADE</span>
-              </div>
-            </Link>
-          </div>
-          <Link
-            to="/Deposite?trading=Account"
-            onClick={() => setActiveMenu(false)}
-            className="flex flex-col items-center justify-center font-semibold text-xs gap-1 text-white"
-          >
-            <div className="flex flex-col items-center justify-center font-semibold text-xs gap-1">
-              <FaUser className="text-[20px]" />
-              <span>ACCOUNT</span>
-            </div>
-          </Link>
-        </nav> */}
-          <h2 className="text-3xl font-semibold text-white p-4">More</h2>
-          <div className="px-2">
+        <div className="flex flex-col h-[90vh] w-full">
+          <h2 className="text-3xl font-semibold text-[#2F281D] p-4 border-b border-[#E7D7AF] bg-gradient-to-r from-white via-[#FFFDF8] to-[#FBF5E8]">
+            More
+          </h2>
+
+          <div className="px-3 pt-3">
             <ul className="space-y-2">
-              <li className="p-3 bg-[#272938] rounded-md">
+              <li className="p-3 bg-[#FBF6E9] border border-[#E7D7AF] rounded-xl shadow-[0_2px_8px_rgba(126,92,20,0.06)]">
                 <span
                   onClick={() => setTop(true)}
-                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-white"
+                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-[#8A6514] cursor-pointer"
                 >
                   Top
                 </span>
               </li>
-              <li className="p-3 bg-[#272938] rounded-md">
+
+              <li className="p-3 bg-[#FBF6E9] border border-[#E7D7AF] rounded-xl shadow-[0_2px_8px_rgba(126,92,20,0.06)]">
                 <Link
                   to="/Deposite?trading=Deposit"
                   onClick={() => setActiveMenu(false)}
-                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-white"
+                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-[#8A6514]"
                 >
                   Deposit
                 </Link>
               </li>
-              <li className="p-3 bg-[#272938] rounded-md">
+
+              <li className="p-3 bg-[#FBF6E9] border border-[#E7D7AF] rounded-xl shadow-[0_2px_8px_rgba(126,92,20,0.06)]">
                 <Link
                   to="/Deposite?trading=Withdrawal"
                   onClick={() => setActiveMenu(false)}
-                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-white"
+                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-[#8A6514]"
                 >
                   Withdrawal
                 </Link>
               </li>
-              <li className="p-3 bg-[#272938] rounded-md">
+
+              <li className="p-3 bg-[#FBF6E9] border border-[#E7D7AF] rounded-xl shadow-[0_2px_8px_rgba(126,92,20,0.06)]">
                 <Link
                   to="/Deposite?trading=Transactions"
                   onClick={() => setActiveMenu(false)}
-                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-white"
+                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-[#8A6514]"
                 >
                   Transactions
                 </Link>
               </li>
-              <li className="p-3 bg-[#272938] rounded-md">
+
+              <li className="p-3 bg-[#FBF6E9] border border-[#E7D7AF] rounded-xl shadow-[0_2px_8px_rgba(126,92,20,0.06)]">
                 <Link
                   to="/Deposite?trading=Trades"
                   onClick={() => setActiveMenu(false)}
-                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-white"
+                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-[#8A6514]"
                 >
                   Trades
                 </Link>
               </li>
-              <li className="p-3 bg-[#272938] rounded-md">
+
+              <li className="p-3 bg-[#FBF6E9] border border-[#E7D7AF] rounded-xl shadow-[0_2px_8px_rgba(126,92,20,0.06)]">
                 <Link
                   to="/Deposite?trading=Account"
                   onClick={() => setActiveMenu(false)}
-                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-white"
+                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-[#8A6514]"
                 >
                   Account
                 </Link>
               </li>
-              <li className="p-3 bg-[#272938] rounded-md">
+
+              <li className="p-3 bg-[#FFF4F1] border border-[#F0D2CC] rounded-xl shadow-[0_2px_8px_rgba(120,55,45,0.05)]">
                 <span
                   onClick={handleLogout}
-                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-red-500"
+                  className="flex flex-col items-center justify-center font-semibold text-base gap-1 text-[#D94B3F] cursor-pointer"
                 >
                   Logout
                 </span>
@@ -179,11 +170,12 @@ export default function MobileFooter() {
           </div>
         </div>
       </div>
+
       {top && (
         <div className="fixed top-0 w-full z-50">
           <div
             onClick={() => setTop(false)}
-            className="cursor-pointer absolute right-3 top-4 text-white text-2xl"
+            className="cursor-pointer absolute right-3 top-4 text-[#8A6514] text-2xl w-9 h-9 rounded-full bg-[#FBF5E5] border border-[#E7D7AF] flex items-center justify-center shadow-sm"
           >
             <RxCross1 />
           </div>
