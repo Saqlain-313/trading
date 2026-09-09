@@ -13,7 +13,6 @@ router.put("/update-user", protect, c.updateUser);
 router.get("/logout", c.logout);
 
 // OTP / Password
-router.post("/sendotp", c.sendOtp);
 router.post("/forgotpassword", c.verifyOtpAndUpdatePassword);
 
 // Recharge
