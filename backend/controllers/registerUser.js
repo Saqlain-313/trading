@@ -4,7 +4,7 @@ const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const axios = require("axios");
 const fs = require("fs");
-const User = require("../models/User");
+const User = require("../models/authmodel");
 const Recharge = require("../models/TradeRecharge");
 const Transaction = require("../models/TradeTransaction");
 const Withdrawal = require("../models/TradeWithdrawal");
@@ -421,7 +421,7 @@ exports.verifySunpayPayment = async (req, res) => {
     const credit = (num(r.amount) + num(r.bonus)) / 86;
     await User.updateOne(
       { userId: r.userId },
-      { $inc: { money: credit, deposit: credit, recharge: credit } },
+      { $inc: { balance: credit, deposit: credit, recharge: credit } },
     );
     await Transaction.findOneAndUpdate(
       { orderId: mchOrderNo, userId: r.userId },
@@ -448,8 +448,8 @@ exports.withdraw = async (req, res) => {
       });
     const o = orderId();
     const u = await User.findOneAndUpdate(
-      { userId: id, money: { $gte: amount } },
-      { $inc: { money: -amount } },
+      { userId: id, balance: { $gte: amount } },
+      { $inc: { balance: -amount } },
       { new: true },
     );
     if (!u) {
@@ -478,7 +478,7 @@ exports.withdraw = async (req, res) => {
         orderId: o,
       });
     } catch (e) {
-      await User.updateOne({ userId: id }, { $inc: { money: amount } });
+      await User.updateOne({ userId: id }, { $inc: { balance: amount } });
       throw e;
     }
     return res.status(201).json({

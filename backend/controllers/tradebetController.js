@@ -168,8 +168,8 @@ exports.placeBet = async (req, res) => {
           message: "All fields (period, amount, bet, tradeType) are required",
         });
     const user = await User.findOneAndUpdate(
-      { userId: id, money: { $gte: a } },
-      { $inc: { money: -a } },
+      { userId: id, balance: { $gte: a } },
+      { $inc: { balance: -a } },
       { new: true },
     );
     if (!user) {
@@ -199,7 +199,7 @@ exports.placeBet = async (req, res) => {
           trade: b,
         });
     } catch (e) {
-      await User.updateOne({ userId: id }, { $inc: { money: a } });
+      await User.updateOne({ userId: id }, { $inc: { balance: a } });
       throw e;
     }
   } catch (e) {
@@ -228,7 +228,7 @@ exports.checkwhichUserIsWinner = async (req = null, res = null) => {
         );
         await User.updateOne(
           { userId: b.userId },
-          { $inc: { money: getAmount } },
+          { $inc: { balance: getAmount } },
         );
       } else
         await Bet.updateOne(
