@@ -74,12 +74,32 @@ const Header = ({ children }) => {
 
   // Menu items matching the design
   const menuItems = [
-    { icon: HomeIcon, label: "Home", path: "/" },
-    { icon: Dice5, label: "Matka", path: "/matka/markets" },
-    { icon: Activity, label: "Activity", path: "/activity" },
-    { icon: PowerIcon, label: "Powerhit", path: "/powerhit" },
-    { icon: Wallet, label: "Wallet", path: "/wallet" },
-    { icon: User, label: "Profile", path: "/profile" },
+    { icon: HomeIcon, label: "Home", path: "https://lotterry.marinclub.site/" },
+    {
+      icon: Dice5,
+      label: "Matka",
+      path: "https://lotterry.marinclub.site/matka/markets",
+    },
+    {
+      icon: Activity,
+      label: "Activity",
+      path: "https://lotterry.marinclub.site/activity",
+    },
+    {
+      icon: PowerIcon,
+      label: "Powerhit",
+      path: "https://lotterry.marinclub.site/powerhit",
+    },
+    {
+      icon: Wallet,
+      label: "Wallet",
+      path: "https://lotterry.marinclub.site/wallet",
+    },
+    {
+      icon: User,
+      label: "Profile",
+      path: "https://lotterry.marinclub.site/profile",
+    },
   ];
 
   // Account menu items
@@ -278,7 +298,7 @@ const Header = ({ children }) => {
                 </>
               ) : (
                 <>
-                  <Link
+                  {/* <Link
                     to="/login"
                     className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg border border-gray-400 text-black text-sm"
                   >
@@ -294,7 +314,7 @@ border border-[#FFD75A] shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px
                     <UserPlus size={16} />
                     <span className="hidden sm:inline">REGISTER</span>
                     <span className="sm:hidden">Register</span>
-                  </Link>
+                  </Link> */}
                 </>
               )}
             </div>
@@ -336,7 +356,7 @@ border border-[#FFD75A] shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px
 
               {/* Activity */}
               <Link
-                to="/activity"
+                to="https://lotterry.marinclub.site/activity"
                 className={`flex flex-col items-center justify-center text-[10px] transition-all duration-500 relative ${
                   location.pathname === "/activity"
                     ? "text-yellow-600"
@@ -363,7 +383,7 @@ border border-[#FFD75A] shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px
 
               {/* Wallet */}
               <Link
-                to="/wallet"
+                to="https://lotterry.marinclub.site/wallet"
                 className={`flex flex-col items-center justify-center text-[10px] transition-all duration-500 relative ${
                   location.pathname === "/wallet"
                     ? "text-yellow-600"
@@ -387,7 +407,7 @@ border border-[#FFD75A] shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px
 
               {/* Profile */}
               <Link
-                to="/account"
+                to="https://lotterry.marinclub.site/account"
                 className={`flex flex-col items-center justify-center text-[10px] transition-all duration-500 relative ${
                   location.pathname === "/profile"
                     ? "text-yellow-600"
@@ -412,7 +432,7 @@ border border-[#FFD75A] shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px
 
             {/* Floating Promo Button with 3D */}
             <Link
-              to="/promo"
+              to="https://lotterry.marinclub.site/promo"
               className="absolute left-1/2 -translate-x-1/2 -top-7 group perspective-1000"
             >
               <div className="relative transform-gpu transition-all duration-700 hover:rotate-y-12 hover:scale-110 hover:-translate-y-2 [transform-style:preserve-3d]">
@@ -498,7 +518,7 @@ shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px_rgba(210,145,0,0.45)] f
             {isAuthenticated && user && (
               <div className="px-4 py-4 border-b border-white/40 bg-gradient-to-r from-yellow-50/30 to-orange-50/30">
                 <Link
-                  to="/account"
+                  to="https://lotterry.marinclub.site/account"
                   onClick={() => setIsSidebarOpen(false)}
                   className="flex items-center gap-3 group"
                 >
@@ -583,7 +603,7 @@ shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px_rgba(210,145,0,0.45)] f
               ) : (
                 <div className="space-y-2.5">
                   <Link
-                    to="/login"
+                    to="https://lotterry.marinclub.site/login"
                     onClick={() => setIsSidebarOpen(false)}
                     className="flex items-center gap-3 rounded-2xl px-4 py-3.5 text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-yellow-50/60 hover:to-orange-50/60 transition-all duration-500 transform-gpu hover:translate-x-2 [transform-style:preserve-3d]"
                   >
@@ -591,7 +611,7 @@ shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px_rgba(210,145,0,0.45)] f
                     Login
                   </Link>
                   <Link
-                    to="/register"
+                    to="https://lotterry.marinclub.site/register"
                     onClick={() => setIsSidebarOpen(false)}
                     className="flex items-center justify-center gap-2 rounded-2xl px-4 py-3.5 bg-gradient-to-r from-yellow-400 via-orange-400 to-orange-500 text-black font-bold hover:shadow-2xl hover:shadow-yellow-500/40 transition-all duration-500 transform-gpu hover:scale-105 [transform-style:preserve-3d]"
                   >
