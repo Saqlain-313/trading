@@ -1,23 +1,21 @@
-import { useState, useRef, useEffect } from "react";
-import logo from "../assets/universalImage/bynex logo 1.png";
-import { BsGlobe } from "react-icons/bs";
-import { RxCross1, RxHamburgerMenu } from "react-icons/rx";
-import { MdAdd } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import { FaCaretDown } from "react-icons/fa6";
-import { IoIosSend } from "react-icons/io";
 import { FiEye, FiLogOut } from "react-icons/fi";
-import { useDispatch, useSelector } from "react-redux";
-import { getUser, Logout } from "../Redux/Reducer/authReducer";
-import { toast } from "react-toastify";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
-import Menubar from "./Menubar";
+import { IoIosSend } from "react-icons/io";
+import { MdAdd } from "react-icons/md";
+import { RxCross1 } from "react-icons/rx";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import air from "../assets/universalImage/561ff9732b7ce13acc53.png";
-import Cookies from "js-cookie";
+import logo from "../assets/universalImage/bynex logo 1.png";
+import { getUser, Logout } from "../Redux/Reducer/authReducer";
+import Menubar from "./Menubar";
 
 const Header = () => {
   const { userInfo, errorMessage, successMessage, loading } = useSelector(
-    (state) => state.auth || {}
+    (state) => state.auth || {},
   );
 
   const navigate = useNavigate();
@@ -99,9 +97,7 @@ const Header = () => {
       if (res?.payload?.success) {
         localStorage.removeItem("token");
 
-        toast.success(
-          res?.payload?.message || "Logged out successfully"
-        );
+        toast.success(res?.payload?.message || "Logged out successfully");
 
         dispatch(getUser());
 
@@ -111,9 +107,7 @@ const Header = () => {
         navigate("/");
         window.location.reload();
       } else {
-        toast.error(
-          res?.payload?.message || "Logout failed"
-        );
+        toast.error(res?.payload?.message || "Logout failed");
       }
     } catch (error) {
       console.error("Logout error:", error);
@@ -127,10 +121,7 @@ const Header = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
       }
     };
@@ -186,17 +177,15 @@ const Header = () => {
   // --------------------------------------------------
 
   return (
-    <header className="shadow-md w-full bg-[#1c1f2d] z-50">
+    <header className="shadow-md w-full bg-white z-50">
       <div className="w-[99%] mx-auto flex justify-between items-center p-2 md:p-4">
-
         {/* =====================================================
             LOGO / DESKTOP LEFT
         ====================================================== */}
 
         <div className="hidden md:flex items-center gap-[50px]">
-
           {Active && (
-            <div className="flex text-white text-4xl cursor-pointer">
+            <div className="flex text-[#222222] text-4xl cursor-pointer">
               {menuOpen ? (
                 <RxCross1 onClick={toggleMobileMenu} />
               ) : (
@@ -205,18 +194,11 @@ const Header = () => {
             </div>
           )}
 
-          <Link
-            to="/SideNavbar"
-            className="hidden md:flex gap-[2.2rem]"
-          >
-            <img
-              src={logo}
-              alt="Bynexx Logo"
-              className="h-8"
-            />
+          <Link to="/SideNavbar" className="hidden md:flex gap-[2.2rem]">
+            <img src={logo} alt="Bynexx Logo" className="h-8" />
 
             {Active && (
-              <span className="text-[15px] font-bold text-gray-400 opacity-60 mt-2">
+              <span className="text-[15px] font-bold text-[#8A8A8A] opacity-60 mt-2">
                 WEB TRADING PLATFORM
               </span>
             )}
@@ -228,21 +210,18 @@ const Header = () => {
         ====================================================== */}
 
         <div className="block md:hidden">
-
           {isLoggedIn ? (
             <button
               onClick={toggleDropdown2}
-              className="hover:bg-[#191919] bg-[#2b3040] text-white px-2 py-1 rounded font-semibold cursor-pointer md:hidden block"
+              className="hover:bg-[#FFFFFF] bg-[#F7F3E8] text-[#222222] px-2 py-1 rounded font-semibold cursor-pointer md:hidden block"
             >
               <div className="flex items-center justify-between gap-1">
-
                 <div className="flex items-center space-x-2">
-                  <IoIosSend className="text-green-500 text-2xl" />
+                  <IoIosSend className="text-[#C9A227] text-2xl" />
                 </div>
 
-                <div className="text-white flex items-center gap-2">
-
-                  <div className="text-sm font-semibold text-[#7e828d]">
+                <div className="text-[#222222] flex items-center gap-2">
+                  <div className="text-sm font-semibold text-[#8A8A8A]">
                     Live
                   </div>
 
@@ -251,27 +230,19 @@ const Header = () => {
                       ? "$ 0.00"
                       : `$ ${formattedBalance}`}
                   </div>
-
                 </div>
 
                 <div
                   className={`transition-transform duration-300 ${
-                    isDropdownOpen2
-                      ? "rotate-180"
-                      : "rotate-0"
+                    isDropdownOpen2 ? "rotate-180" : "rotate-0"
                   }`}
                 >
-                  <FaCaretDown className="text-white text-xl" />
+                  <FaCaretDown className="text-[#222222] text-xl" />
                 </div>
-
               </div>
             </button>
           ) : (
-            <img
-              src={logo}
-              alt="Bynexx Logo"
-              className="h-8"
-            />
+            <img src={logo} alt="Bynexx Logo" className="h-8" />
           )}
 
           {/* =================================================
@@ -280,107 +251,80 @@ const Header = () => {
 
           {isDropdownOpen2 && (
             <div className="absolute left-0 top-7 mt-2 w-96 rounded shadow-lg z-[8888888888] flex p-2 text-sm">
-
               {/* LEFT PANEL */}
-              <div className="w-2/3 p-4 bg-[#191919] rounded">
-
+              <div className="w-2/3 p-4 bg-[#FFFFFF] rounded">
                 <div className="flex justify-between items-center mb-4 gap-1">
-
-                  <div className="flex items-center rounded-s-md bg-[#282a38] px-2 w-full">
-
-                    <IoIosSend className="text-2xl mr-2 text-green-500" />
+                  <div className="flex items-center rounded-s-md bg-[#F7F3E8] px-2 w-full">
+                    <IoIosSend className="text-2xl mr-2 text-[#C9A227]" />
 
                     <div>
-                      <div className="font-bold text-xs text-gray-400">
+                      <div className="font-bold text-xs text-[#8A8A8A]">
                         STANDARD:
                       </div>
 
-                      <div className="text-white">
-                        +0% profit
-                      </div>
+                      <div className="text-[#222222]">+0% profit</div>
                     </div>
-
                   </div>
 
-                  <button className="text-white hover:text-gray-300 rounded-e-md bg-[#282a38] p-3">
+                  <button className="text-[#222222] hover:text-[#8A8A8A] rounded-e-md bg-[#F7F3E8] p-3">
                     <FiEye className="w-4 h-4" />
                   </button>
-
                 </div>
 
                 <div className="mb-4">
-
-                  <div className="text-white font-semibold text-sm">
+                  <div className="text-[#222222] font-semibold text-sm">
                     {userEmail}
                   </div>
 
-                  <span className="text-gray-500 font-semibold">
+                  <span className="text-[#777777] font-semibold">
                     ID: {userId}
                   </span>
-
                 </div>
 
                 <div className="flex items-center gap-2 mb-4">
-
-                  <div className="text-white font-bold">
-                    Currency:
-                  </div>
+                  <div className="text-[#222222] font-bold">Currency:</div>
 
                   <div className="flex items-center">
-
-                    <span className="font-medium mr-2 text-white">
+                    <span className="font-medium mr-2 text-[#222222]">
                       {currency}
                     </span>
 
-                    <button className="text-black bg-white px-3 rounded hover:bg-gray-200 font-semibold text-sm">
+                    <button className="text-[#222222] bg-[#FDFBF5] px-3 rounded hover:bg-[#F1EBDC] font-semibold text-sm">
                       Change
                     </button>
-
                   </div>
-
                 </div>
 
                 <div className="space-y-3">
-
                   {/* LIVE ACCOUNT */}
 
                   <div
                     className={`flex items-center p-2 rounded cursor-pointer ${
-                      activeAccount === "live"
-                        ? "bg-blue-900/30"
-                        : ""
+                      activeAccount === "live" ? "bg-[#F7F3E8]" : ""
                     }`}
                     onClick={handleClick}
                   >
-
                     <div
                       className={`w-5 h-5 border-2 rounded-full mr-3 ${
                         activeAccount === "live"
-                          ? "bg-green-500 border-green-500"
-                          : "border-gray-300"
+                          ? "bg-[#C9A227] border-[#C9A227]"
+                          : "border-[#D8D1BD]"
                       }`}
                     >
                       {activeAccount === "live" && (
-                        <div className="w-4 h-4 rounded-full bg-white mx-auto my-auto" />
+                        <div className="w-4 h-4 rounded-full bg-[#FDFBF5] mx-auto my-auto" />
                       )}
                     </div>
 
                     <div>
-
-                      <div className="text-white font-medium">
+                      <div className="text-[#222222] font-medium">
                         Live Account
                       </div>
 
-                      <div className="text-white">
-                        $ {formattedBalance}
-                      </div>
-
+                      <div className="text-[#222222]">$ {formattedBalance}</div>
                     </div>
-
                   </div>
-
                 </div>
-
               </div>
             </div>
           )}
@@ -402,19 +346,16 @@ const Header = () => {
 
         {!Active ? (
           <div className="flex items-center gap-3">
-
             {/* Language Selector intentionally disabled */}
-
           </div>
         ) : (
           <div>
-
             {/* MOBILE DEPOSIT */}
 
             <div className="md:hidden">
               <Link
                 to="/Deposite?trading=Deposit"
-                className="block text-white hover:text-gray-300 p-1.5 hover:bg-gray-700 rounded bg-green-500 font-semibold px-4 text-sm"
+                className="block text-[#222222] hover:text-[#8A8A8A] p-1.5 hover:bg-[#F1EBDC] rounded bg-[#C9A227] font-semibold px-4 text-sm"
               >
                 Deposit
               </Link>
@@ -423,30 +364,22 @@ const Header = () => {
             {/* DESKTOP RIGHT */}
 
             <div className="hidden md:flex items-center space-x-4">
-
               {/* =================================================
                   ACCOUNT DROPDOWN
               ================================================== */}
 
-              <div
-                className="relative"
-                ref={dropdownRef}
-              >
-
+              <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={toggleDropdown}
-                  className="hover:bg-[#191919] bg-[#2b3040] text-white px-2 py-1 rounded font-semibold cursor-pointer"
+                  className="hover:bg-[#FFFFFF] bg-[#F7F3E8] text-[#222222] px-2 py-1 rounded font-semibold cursor-pointer"
                 >
-
                   <div className="flex items-center justify-between gap-3">
-
                     <div className="flex items-center space-x-2">
-                      <IoIosSend className="text-green-500 text-2xl" />
+                      <IoIosSend className="text-[#C9A227] text-2xl" />
                     </div>
 
-                    <div className="text-white">
-
-                      <div className="text-sm font-semibold text-[#7e828d]">
+                    <div className="text-[#222222]">
+                      <div className="text-sm font-semibold text-[#8A8A8A]">
                         Live Account
                       </div>
 
@@ -455,21 +388,16 @@ const Header = () => {
                           ? "$ 0.00"
                           : `$ ${formattedBalance}`}
                       </div>
-
                     </div>
 
                     <div
                       className={`transition-transform duration-300 ${
-                        isDropdownOpen
-                          ? "rotate-180"
-                          : "rotate-0"
+                        isDropdownOpen ? "rotate-180" : "rotate-0"
                       }`}
                     >
-                      <FaCaretDown className="text-white text-xl" />
+                      <FaCaretDown className="text-[#222222] text-xl" />
                     </div>
-
                   </div>
-
                 </button>
 
                 {/* =================================================
@@ -477,207 +405,152 @@ const Header = () => {
                 ================================================== */}
 
                 {isDropdownOpen && (
-                  <div className="absolute right-0 top-0 mt-2 w-96 bg-[#191919] rounded shadow-lg z-[8888888888] flex p-2">
-
+                  <div className="absolute right-0 top-0 mt-2 w-96 bg-[#FFFFFF] rounded shadow-lg z-[8888888888] flex p-2">
                     {/* LEFT PANEL */}
 
-                    <div className="w-2/3 p-4 bg-[#1c1f2d] rounded">
-
+                    <div className="w-2/3 p-4 bg-[#FDFBF5] rounded">
                       <div className="flex justify-between items-center mb-4 gap-1">
-
-                        <div className="flex items-center rounded-s-md bg-[#282a38] px-2 w-full">
-
-                          <IoIosSend className="text-2xl mr-2 text-green-500" />
+                        <div className="flex items-center rounded-s-md bg-[#F7F3E8] px-2 w-full">
+                          <IoIosSend className="text-2xl mr-2 text-[#C9A227]" />
 
                           <div>
-
-                            <div className="font-bold text-xs text-gray-400">
+                            <div className="font-bold text-xs text-[#8A8A8A]">
                               STANDARD:
                             </div>
 
-                            <div className="text-white">
-                              +0% profit
-                            </div>
-
+                            <div className="text-[#222222]">+0% profit</div>
                           </div>
-
                         </div>
 
-                        <button className="text-white hover:text-gray-300 rounded-e-md bg-[#282a38] p-3">
+                        <button className="text-[#222222] hover:text-[#8A8A8A] rounded-e-md bg-[#F7F3E8] p-3">
                           <FiEye className="w-4 h-4" />
                         </button>
-
                       </div>
 
                       <div className="mb-4">
-
-                        <div className="text-white font-semibold text-sm">
+                        <div className="text-[#222222] font-semibold text-sm">
                           {userEmail}
                         </div>
 
-                        <span className="text-gray-500 font-semibold">
+                        <span className="text-[#777777] font-semibold">
                           ID: {userId}
                         </span>
-
                       </div>
 
                       <div className="flex items-center gap-2 mb-4">
-
-                        <div className="text-white font-bold">
+                        <div className="text-[#222222] font-bold">
                           Currency:
                         </div>
 
                         <div className="flex items-center">
-
-                          <span className="font-medium mr-2 text-white">
+                          <span className="font-medium mr-2 text-[#222222]">
                             {currency}
                           </span>
 
-                          <button className="text-black bg-white px-3 rounded hover:bg-gray-200 font-semibold text-sm">
+                          <button className="text-[#222222] bg-[#FDFBF5] px-3 rounded hover:bg-[#F1EBDC] font-semibold text-sm">
                             Change
                           </button>
-
                         </div>
-
                       </div>
 
                       <div className="space-y-3">
-
                         {/* LIVE ACCOUNT */}
 
                         <div
                           className={`flex items-center p-2 rounded cursor-pointer ${
-                            activeAccount === "live"
-                              ? "bg-blue-900/30"
-                              : ""
+                            activeAccount === "live" ? "bg-[#F7F3E8]" : ""
                           }`}
                           onClick={handleClick}
                         >
-
                           <div
                             className={`w-5 h-5 border-2 rounded-full mr-3 ${
                               activeAccount === "live"
-                                ? "bg-green-500 border-green-500"
-                                : "border-gray-300"
+                                ? "bg-[#C9A227] border-[#C9A227]"
+                                : "border-[#D8D1BD]"
                             }`}
                           >
-
                             {activeAccount === "live" && (
-                              <div className="w-4 h-4 rounded-full bg-white mx-auto my-auto" />
+                              <div className="w-4 h-4 rounded-full bg-[#FDFBF5] mx-auto my-auto" />
                             )}
-
                           </div>
 
                           <div>
-
-                            <div className="text-white font-medium">
+                            <div className="text-[#222222] font-medium">
                               Live Account
                             </div>
 
-                            <div className="text-white">
+                            <div className="text-[#222222]">
                               $ {formattedBalance}
                             </div>
-
                           </div>
-
                         </div>
-
                       </div>
-
                     </div>
 
                     {/* =================================================
                         RIGHT PANEL
                     ================================================== */}
 
-                    <div className="w-1/3 bg-[#191919] rounded-r-md p-2">
-
+                    <div className="w-1/3 bg-[#FFFFFF] rounded-r-md p-2">
                       <ul className="space-y-3">
-
-                        <li
-                          onClick={() =>
-                            setIsDropdownOpen(false)
-                          }
-                        >
+                        <li onClick={() => setIsDropdownOpen(false)}>
                           <Link
                             to="/Deposite?trading=Deposit"
-                            className="block text-white hover:text-gray-300 p-2 hover:bg-gray-700 rounded"
+                            className="block text-[#222222] hover:text-[#8A8A8A] p-2 hover:bg-[#F1EBDC] rounded"
                           >
                             Deposit
                           </Link>
                         </li>
 
-                        <li
-                          onClick={() =>
-                            setIsDropdownOpen(false)
-                          }
-                        >
+                        <li onClick={() => setIsDropdownOpen(false)}>
                           <Link
                             to="/Deposite?trading=Withdrawal"
-                            className="block text-white hover:text-gray-300 p-2 hover:bg-gray-700 rounded"
+                            className="block text-[#222222] hover:text-[#8A8A8A] p-2 hover:bg-[#F1EBDC] rounded"
                           >
                             Withdrawal
                           </Link>
                         </li>
 
-                        <li
-                          onClick={() =>
-                            setIsDropdownOpen(false)
-                          }
-                        >
+                        <li onClick={() => setIsDropdownOpen(false)}>
                           <Link
                             to="/Deposite?trading=Transactions"
-                            className="block text-white hover:text-gray-300 p-2 hover:bg-gray-700 rounded"
+                            className="block text-[#222222] hover:text-[#8A8A8A] p-2 hover:bg-[#F1EBDC] rounded"
                           >
                             Transactions
                           </Link>
                         </li>
 
-                        <li
-                          onClick={() =>
-                            setIsDropdownOpen(false)
-                          }
-                        >
+                        <li onClick={() => setIsDropdownOpen(false)}>
                           <Link
                             to="/Deposite?trading=Trades"
-                            className="block text-white hover:text-gray-300 p-2 hover:bg-gray-700 rounded"
+                            className="block text-[#222222] hover:text-[#8A8A8A] p-2 hover:bg-[#F1EBDC] rounded"
                           >
                             Trades
                           </Link>
                         </li>
 
-                        <li
-                          onClick={() =>
-                            setIsDropdownOpen(false)
-                          }
-                        >
+                        <li onClick={() => setIsDropdownOpen(false)}>
                           <Link
                             to="/Deposite?trading=Account"
-                            className="block text-white hover:text-gray-300 p-2 hover:bg-gray-700 rounded"
+                            className="block text-[#222222] hover:text-[#8A8A8A] p-2 hover:bg-[#F1EBDC] rounded"
                           >
                             Account
                           </Link>
                         </li>
 
-                        <li className="border-t border-gray-700 pt-3">
-
+                        <li className="border-t border-[#D8D1BD] pt-3">
                           <button
                             onClick={handleLogout}
-                            className="flex items-center text-red-500 hover:text-red-400 w-full p-2"
+                            className="flex items-center text-[#B04A3A] hover:text-[#8E3528] w-full p-2"
                           >
                             <FiLogOut className="mr-2" />
                             <span>Logout</span>
                           </button>
-
                         </li>
-
                       </ul>
-
                     </div>
-
                   </div>
                 )}
-
               </div>
 
               {/* =================================================
@@ -685,10 +558,9 @@ const Header = () => {
               ================================================== */}
 
               <div className="flex items-center gap-3">
-
                 <Link
                   to="/Deposite?trading=Deposit"
-                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded font-semibold flex items-center gap-2"
+                  className="bg-[#C9A227] hover:bg-[#B8941F] text-[#222222] px-4 py-2 rounded font-semibold flex items-center gap-2"
                 >
                   <MdAdd className="text-xl" />
                   Deposit
@@ -696,13 +568,11 @@ const Header = () => {
 
                 <Link
                   to="/Deposite?trading=Withdrawal"
-                  className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded text-white font-semibold"
+                  className="bg-[#E6E1D4] hover:bg-[#F1EBDC] px-4 py-2 rounded text-[#222222] font-semibold"
                 >
                   Withdrawal
                 </Link>
-
               </div>
-
             </div>
           </div>
         )}
@@ -712,12 +582,11 @@ const Header = () => {
         ====================================================== */}
 
         {/* <button
-          className="md:hidden text-white text-2xl bg-[#58585b] p-2 rounded"
+          className="md:hidden text-[#222222] text-2xl bg-[#F7F3E8] p-2 rounded"
           onClick={toggleMobileMenu}
         >
           <RxHamburgerMenu />
         </button> */}
-
       </div>
 
       {/* =====================================================
@@ -725,59 +594,44 @@ const Header = () => {
       ====================================================== */}
 
       {isMobileMenuOpen && (
-        <div className="absolute md:hidden bg-[#272938] shadow-lg z-50 w-full mx-auto">
-
+        <div className="absolute md:hidden bg-[#FFFFFF] shadow-lg z-50 w-full mx-auto">
           <div className="container mx-auto p-4">
-
             <div className="flex flex-col space-y-4">
-
               {navLinks.map((link) => (
                 <Link
                   key={link.text}
                   to={link.path}
-                  className="text-white hover:text-blue-400"
-                  onClick={() =>
-                    setMobileMenuOpen(false)
-                  }
+                  className="text-[#222222] hover:text-[#C9A227]"
+                  onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.text}
                 </Link>
               ))}
-
             </div>
 
             <div className="mt-6 flex flex-col space-y-4">
-
               <Link
                 to="/"
-                className="text-white hover:text-blue-400"
-                onClick={() =>
-                  setMobileMenuOpen(false)
-                }
+                className="text-[#222222] hover:text-[#C9A227]"
+                onClick={() => setMobileMenuOpen(false)}
               >
                 Log in
               </Link>
 
               <Link
                 to="/"
-                className="bg-[#026fd3] text-white px-4 py-2 rounded hover:bg-[#026fd3] text-center"
-                onClick={() =>
-                  setMobileMenuOpen(false)
-                }
+                className="bg-[#C9A227] text-[#222222] px-4 py-2 rounded hover:bg-[#C9A227] text-center"
+                onClick={() => setMobileMenuOpen(false)}
               >
                 Sign up
               </Link>
-
             </div>
 
             <div className="mt-6 flex justify-between">
-
               <Link
                 to="/Deposite?trading=Deposit"
-                className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded font-semibold flex items-center gap-2"
-                onClick={() =>
-                  setMobileMenuOpen(false)
-                }
+                className="bg-[#C9A227] hover:bg-[#B8941F] text-[#222222] px-4 py-2 rounded font-semibold flex items-center gap-2"
+                onClick={() => setMobileMenuOpen(false)}
               >
                 <MdAdd className="text-xl" />
                 Deposit
@@ -785,16 +639,12 @@ const Header = () => {
 
               <Link
                 to="/Deposite?trading=Withdrawal"
-                className="bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded text-white font-semibold"
-                onClick={() =>
-                  setMobileMenuOpen(false)
-                }
+                className="bg-[#E6E1D4] hover:bg-[#F1EBDC] px-4 py-2 rounded text-[#222222] font-semibold"
+                onClick={() => setMobileMenuOpen(false)}
               >
                 Withdrawal
               </Link>
-
             </div>
-
           </div>
         </div>
       )}
@@ -804,12 +654,8 @@ const Header = () => {
       ====================================================== */}
 
       {menuOpen && (
-        <div className="absolute bg-[#272938b7] shadow-lg z-50 w-full mx-auto">
-
-          <Menubar
-            closeMenu={() => setMenuOpen(false)}
-          />
-
+        <div className="absolute bg-[#FFFFFF] shadow-lg z-50 w-full mx-auto">
+          <Menubar closeMenu={() => setMenuOpen(false)} />
         </div>
       )}
 
@@ -819,31 +665,20 @@ const Header = () => {
 
       {Number(Active) <= 0 && (
         <div className="bg-disc rounded-full absolute top-3 left-1/2 -translate-x-1/2 hidden md:block">
-
           <Link
             to="/Deposite?trading=Deposit"
-            className="flex justify-between items-center gap-2 text-white font-semibold p-2 px-4"
+            className="flex justify-between items-center gap-2 text-[#222222] font-semibold p-2 px-4"
           >
+            <img src={air} alt="air" className="h-8 w-auto" />
 
-            <img
-              src={air}
-              alt="air"
-              className="h-8 w-auto"
-            />
+            <p>Get a 30% bonus on your first deposit</p>
 
-            <p>
-              Get a 30% bonus on your first deposit
-            </p>
-
-            <p className="bg-gray-600 rounded-full text-white text-sm p-2">
+            <p className="bg-[#E6E1D4] rounded-full text-[#222222] text-sm p-2">
               30%
             </p>
-
           </Link>
-
         </div>
       )}
-
     </header>
   );
 };

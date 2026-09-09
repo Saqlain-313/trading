@@ -1,22 +1,21 @@
 import {
   AlertTriangle,
-  ArrowRight,
   ArrowRightCircle,
   ChevronDown,
   ChevronUp,
   DollarSign,
   Percent,
 } from "lucide-react";
-import React, { useState } from "react";
-import { FaArrowCircleRight, FaBitcoin, FaChevronLeft } from "react-icons/fa"; // Import necessary icons
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { FaArrowCircleRight, FaBitcoin } from "react-icons/fa"; // Import necessary icons
+import { IoIosGift } from "react-icons/io";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import img1 from "../assets/universalImage/secure-3dsecure-dark@2x.png";
 import img2 from "../assets/universalImage/secure-securecode-dark@2x.png";
 import img3 from "../assets/universalImage/secure-securepayment-dark@2x.png";
 import img4 from "../assets/universalImage/secure-ssl-dark@2x.png";
 import img5 from "../assets/universalImage/secure-verified-dark@2x.png";
-import { IoIosGift } from "react-icons/io";
-import { useDispatch } from "react-redux";
 import { usePromocode } from "../Redux/Reducer/paymentReducer";
 
 const BonusPage = () => {
@@ -76,7 +75,7 @@ const BonusPage = () => {
       <div className=" mx-auto bg-[#212634] flex flex-col lg:flex-row items-center lg:items-start gap-4 p-5 overflow-auto">
         {/* Payment method section */}
         <div className="lg:w-[30%]">
-          <div className="flex-1 p-2 md:p-6 bg-white rounded shadow-sm">
+          <div className="flex-1 p-2 md:p-6 bg-[#1c1f2d] rounded shadow-sm">
             <div className="text-lg font-semibold text-gray-700 mb-4">
               Chosen payment method:
             </div>
@@ -189,7 +188,7 @@ const BonusPage = () => {
                       message === "Invalid promo code"
                         ? "text-white"
                         : "text-green-500"
-                    }  bg-white/20 p-2 rounded `}
+                    }  bg-[#1c1f2d]/20 p-2 rounded `}
                   >
                     {message}
                   </p>
@@ -207,10 +206,9 @@ const BonusPage = () => {
                     </h4>
                     <p className="text-sm text-gray-300">
                       This address is for{" "}
-                      <span className="font-semibold">{method}</span>{" "}
-                      transfers only. Do not send smart contracts, TRX coins or
-                      any other cryptocurrency to it. Such transfers will not be
-                      credited.
+                      <span className="font-semibold">{method}</span> transfers
+                      only. Do not send smart contracts, TRX coins or any other
+                      cryptocurrency to it. Such transfers will not be credited.
                     </p>
                   </div>
                 </div>

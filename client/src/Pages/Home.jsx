@@ -1,15 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { FaArrowRight, FaEye, FaEyeSlash, FaUser, FaLock, FaGlobe, FaMoneyBillWave } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import {
+  FaArrowRight,
+  FaEye,
+  FaEyeSlash,
+  FaGlobe,
+  FaLock,
+  FaMoneyBillWave,
+} from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { getUser, loginUser, Register, SendOtp } from "../Redux/Reducer/authReducer";
 import { toast } from "react-toastify";
 import Spinner from "../components/Spinner";
+import {
+  getUser,
+  loginUser,
+  Register,
+  SendOtp,
+} from "../Redux/Reducer/authReducer";
 
 const Home = () => {
   const { userInfo, errorMessage, successMessage, loading } = useSelector(
-    (state) => state.auth
+    (state) => state.auth,
   );
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,7 +34,7 @@ const Home = () => {
     currency: "USD",
     rememberMe: false,
     rulesAccepted: false,
-    notUsCitizen: false
+    notUsCitizen: false,
   });
   const [showOtpPopup, setShowOtpPopup] = useState(false);
   const [otp, setOtp] = useState("");
@@ -44,20 +56,20 @@ const Home = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     if (!isLogin) {
       if (!formData.rulesAccepted || !formData.notUsCitizen) {
         toast.error("Please accept all terms and conditions");
         setIsSubmitting(false);
         return;
       }
-      
+
       dispatch(Register(formData)).then((res) => {
         setIsSubmitting(false);
         if (res?.payload?.success) {
           toast.success(res.payload.message);
           setTimeout(() => {
-            navigate('/SideNavbar', { replace: true });
+            navigate("/SideNavbar", { replace: true });
           }, 1000);
         } else {
           toast.error(res.payload.message);
@@ -80,13 +92,13 @@ const Home = () => {
       toast.error("Please enter OTP");
       return;
     }
-    
+
     setIsSubmitting(true);
     const loginDataWithOtp = {
       ...formData,
       otp,
     };
-  
+
     dispatch(loginUser(loginDataWithOtp)).then((res) => {
       setIsSubmitting(false);
       if (res?.payload?.success) {
@@ -121,7 +133,7 @@ const Home = () => {
             {isLogin ? "Sign in to continue" : "Get started with your account"}
           </p>
         </div> */}
-        
+
         <div className="bg-[#2d3440] rounded-md shadow-xl overflow-hidden">
           {/* Tab Navigation */}
           <div className="flex border-b border-[#3e4655]">
@@ -151,7 +163,10 @@ const Home = () => {
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Email Field */}
               <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-300">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-300"
+                >
                   Email Address
                 </label>
                 <div className="relative">
@@ -173,7 +188,10 @@ const Home = () => {
 
               {/* Password Field */}
               <div className="space-y-2">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-300">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-300"
+                >
                   Password
                 </label>
                 <div className="relative">
@@ -218,7 +236,10 @@ const Home = () => {
                       onChange={handleInputChange}
                       className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-600 rounded bg-[#1f893f]"
                     />
-                    <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-300">
+                    <label
+                      htmlFor="rememberMe"
+                      className="ml-2 block text-sm text-gray-300"
+                    >
                       Remember me
                     </label>
                   </div>
@@ -236,7 +257,10 @@ const Home = () => {
                 <>
                   {/* Country Field */}
                   <div className="space-y-2">
-                    <label htmlFor="country" className="block text-sm font-medium text-gray-300">
+                    <label
+                      htmlFor="country"
+                      className="block text-sm font-medium text-gray-300"
+                    >
                       Country
                     </label>
                     <div className="relative">
@@ -244,20 +268,23 @@ const Home = () => {
                         <FaGlobe className="h-5 w-5 text-gray-400" />
                       </div>
                       <input
-                               id="country"
+                        id="country"
                         name="country"
                         value={formData.country}
                         onChange={handleInputChange}
                         required
-                    className="w-full pl-10 pr-4 py-3 bg-[#3a4252] border border-[#4a5466] rounded-md focus:outline-none  text-white placeholder-gray-400"
-                    placeholder="Country"
-                  />
+                        className="w-full pl-10 pr-4 py-3 bg-[#3a4252] border border-[#4a5466] rounded-md focus:outline-none  text-white placeholder-gray-400"
+                        placeholder="Country"
+                      />
                     </div>
                   </div>
 
                   {/* Currency Field */}
                   <div className="space-y-2">
-                    <label htmlFor="currency" className="block text-sm font-medium text-gray-300">
+                    <label
+                      htmlFor="currency"
+                      className="block text-sm font-medium text-gray-300"
+                    >
                       Currency
                     </label>
                     <div className="relative">
@@ -292,8 +319,11 @@ const Home = () => {
                           className="h-4 w-4 text-blue-600 focus:ring-[#22c55e] border-gray-600 rounded bg-[#3a4252]"
                         />
                       </div>
-                      <label htmlFor="rulesAccepted" className="ml-2 block text-sm text-gray-300">
-                        I confirm that I am 18 years old or older and accept the{' '}
+                      <label
+                        htmlFor="rulesAccepted"
+                        className="ml-2 block text-sm text-gray-300"
+                      >
+                        I confirm that I am 18 years old or older and accept the{" "}
                         <a href="#" className="text-blue-400 hover:underline">
                           Terms of Service
                         </a>
@@ -312,8 +342,12 @@ const Home = () => {
                           className="h-4 w-4 text-blue-600 focus:ring-[#22c55e] border-gray-600 rounded bg-[#3a4252]"
                         />
                       </div>
-                      <label htmlFor="notUsCitizen" className="ml-2 block text-sm text-gray-300">
-                        I declare that I am not a citizen or resident of the US for tax purposes
+                      <label
+                        htmlFor="notUsCitizen"
+                        className="ml-2 block text-sm text-gray-300"
+                      >
+                        I declare that I am not a citizen or resident of the US
+                        for tax purposes
                       </label>
                     </div>
                   </div>
@@ -325,20 +359,38 @@ const Home = () => {
                 type="submit"
                 disabled={isSubmitting}
                 className={`w-full flex justify-center items-center py-3 px-4 border border-transparent rounded shadow-sm text-sm font-medium text-white ${
-                  isSubmitting ? 'bg-[#4a8ded]' : 'bg-[#4a8ded] hover:bg-[#4a8ded]'
+                  isSubmitting
+                    ? "bg-[#4a8ded]"
+                    : "bg-[#4a8ded] hover:bg-[#4a8ded]"
                 } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4a8ded] transition-colors`}
               >
                 {isSubmitting ? (
                   <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
-                    {isLogin ? 'Signing in...' : 'Creating account...'}
+                    {isLogin ? "Signing in..." : "Creating account..."}
                   </>
                 ) : (
                   <>
-                    {isLogin ? 'Sign In' : 'Create Account'}
+                    {isLogin ? "Sign In" : "Create Account"}
                     <FaArrowRight className="ml-2" />
                   </>
                 )}
@@ -349,7 +401,7 @@ const Home = () => {
             <div className="mt-6 text-center text-sm text-gray-400">
               {isLogin ? (
                 <p>
-                  Don't have an account?{' '}
+                  Don't have an account?{" "}
                   <button
                     onClick={() => handleTabChange(false)}
                     className="text-blue-500 hover:text-blue-300 font-medium hover:underline"
@@ -359,7 +411,7 @@ const Home = () => {
                 </p>
               ) : (
                 <p>
-                  Already have an account?{' '}
+                  Already have an account?{" "}
                   <button
                     onClick={() => handleTabChange(true)}
                     className="text-blue-500 hover:text-blue-300 font-medium hover:underline"
@@ -378,8 +430,10 @@ const Home = () => {
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 backdrop-blur-sm">
           <div className="bg-[#444b5d] p-6 rounded-md w-full max-w-md mx-4 shadow-xl border border-[#575d6e]">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-2xl font-bold text-white">Verify Your Email</h3>
-              <button 
+              <h3 className="text-2xl font-bold text-white">
+                Verify Your Email
+              </h3>
+              <button
                 onClick={() => {
                   setShowOtpPopup(false);
                   setOtp("");
@@ -389,13 +443,17 @@ const Home = () => {
                 &times;
               </button>
             </div>
-            
+
             <p className="text-gray-300 mb-6">
-              We've sent a 6-digit verification code to <span className="text-white font-medium">{formData.email}</span>
+              We've sent a 6-digit verification code to{" "}
+              <span className="text-white font-medium">{formData.email}</span>
             </p>
 
             <div className="mb-6">
-              <label htmlFor="otp" className="block text-sm font-medium text-gray-300 mb-2">
+              <label
+                htmlFor="otp"
+                className="block text-sm font-medium text-gray-300 mb-2"
+              >
                 Verification Code
               </label>
               <div className="flex justify-center space-x-2">
@@ -409,7 +467,7 @@ const Home = () => {
                       const newOtp = otp.split("");
                       newOtp[index] = e.target.value.replace(/[^0-9]/g, "");
                       setOtp(newOtp.join(""));
-                      
+
                       if (e.target.value && index < 5) {
                         document.getElementById(`otp-${index + 1}`)?.focus();
                       }
@@ -441,13 +499,31 @@ const Home = () => {
               >
                 {isSubmitting ? (
                   <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
                     Verifying...
                   </>
-                ) : "Verify Account"}
+                ) : (
+                  "Verify Account"
+                )}
               </button>
 
               <div className="text-center">
@@ -465,7 +541,8 @@ const Home = () => {
             </div>
 
             <p className="text-gray-400 text-xs mt-4 text-center">
-              The code will expire in 10 minutes. Make sure to enter it promptly.
+              The code will expire in 10 minutes. Make sure to enter it
+              promptly.
             </p>
           </div>
         </div>
