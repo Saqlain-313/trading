@@ -11,7 +11,7 @@ const Message = require("../models/TradeMessage");
 const Promocode = require("../models/Promocode");
 const { timerJoin } = require("../utils/Timer");
 const { uploadImage } = require("../utils/uploadImage");
-const JWT_SECRET = process.env.JWT_SECRET || "santosh";
+const JWT_SECRET = process.env.JWT_SECRET || "myverysecretkey";
 const num = (v) => {
   const n = Number(v);
   return Number.isFinite(n) ? n : 0;

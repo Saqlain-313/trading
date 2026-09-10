@@ -8,7 +8,6 @@ export const getPeriod = createAsyncThunk(
   async ({ page, limit }, { rejectWithValue }) => {
     try {
       const response = await api.get(`/get-periodid?page=${page}&limit=${limit}`, {
-        withCredentials: true,
       });
       const data = response.data;
       return data;
@@ -24,7 +23,6 @@ export const betHistory = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get(`/bets-history`, {
-        withCredentials: true,
       });
       const data = response.data;
       return data;
@@ -40,7 +38,6 @@ export const pendingHistory = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get(`/pending-history`, {
-        withCredentials: true,
       });
       const data = response.data;
       return data;
@@ -57,7 +54,6 @@ export const placebet = createAsyncThunk(
   async ({ bet, tradeType, amount, period }, { rejectWithValue }) => {
     try {
       const response = await api.post("/placeBet", { bet, tradeType, amount, period }, {
-        withCredentials: true,
       });
       return response
     } catch (error) {
@@ -73,7 +69,6 @@ export const getBetGrapgResult = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get(`/get-periodid`, {
-        withCredentials: true,
       });
       const data = response.data;
       return data;

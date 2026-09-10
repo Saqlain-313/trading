@@ -6,25 +6,51 @@ const User = require("../models/authmodel");
 // ============================================================
 
 const getToken = (req) => {
-  // Admin token
-  if (req.cookies?.adminToken) {
-    return req.cookies.adminToken;
+  const cookies = req.cookies || {};
+
+  console.log(
+    "COOKIES IN getToken():",
+    cookies
+  );
+
+  // ----------------------------------------------------------
+  // ADMIN COOKIE
+  // ----------------------------------------------------------
+
+  if (cookies.adminToken) {
+    console.log("TOKEN SOURCE: Admin Cookie");
+    return cookies.adminToken;
   }
 
-  // User token
-  if (req.cookies?.token) {
-    return req.cookies.token;
+  // ----------------------------------------------------------
+  // USER COOKIE
+  // ----------------------------------------------------------
+
+  if (cookies.powerhit) {
+    console.log("TOKEN SOURCE: User Cookie");
+    return cookies.powerhit;
   }
 
-  // Authorization header
+  // ----------------------------------------------------------
+  // AUTHORIZATION HEADER FALLBACK
+  // ----------------------------------------------------------
+
   const authHeader = req.headers?.authorization;
 
   if (
     authHeader &&
     authHeader.startsWith("Bearer ")
   ) {
-    return authHeader.substring(7).trim();
+    console.log(
+      "TOKEN SOURCE: Authorization Header"
+    );
+
+    return authHeader
+      .substring(7)
+      .trim();
   }
+
+  console.log("TOKEN SOURCE: NONE");
 
   return null;
 };
@@ -38,7 +64,7 @@ const protect = async (req, res, next) => {
     const token = getToken(req);
 
     // --------------------------------------------------------
-    // No token
+    // NO TOKEN
     // --------------------------------------------------------
 
     if (!token) {
@@ -49,7 +75,7 @@ const protect = async (req, res, next) => {
     }
 
     // --------------------------------------------------------
-    // JWT secret
+    // JWT SECRET
     // --------------------------------------------------------
 
     if (!process.env.JWT_SECRET) {
@@ -64,7 +90,7 @@ const protect = async (req, res, next) => {
     }
 
     // --------------------------------------------------------
-    // Verify JWT
+    // VERIFY JWT
     // --------------------------------------------------------
 
     let decoded;
@@ -87,16 +113,7 @@ const protect = async (req, res, next) => {
     }
 
     // --------------------------------------------------------
-    // Find user
-    //
-    // NEW TOKEN:
-    // decoded.id = MongoDB _id
-    // decoded.userId = numeric userId
-    //
-    // OLD TOKEN:
-    // decoded.id = MongoDB _id
-    //
-    // Both are supported.
+    // FIND USER BY MONGODB _id
     // --------------------------------------------------------
 
     let user = null;
@@ -105,7 +122,9 @@ const protect = async (req, res, next) => {
       try {
         user = await User.findById(
           decoded.id
-        ).select("-password -plainPassword");
+        ).select(
+          "-password -plainPassword"
+        );
       } catch (error) {
         console.error(
           "USER FIND ERROR:",
@@ -115,7 +134,7 @@ const protect = async (req, res, next) => {
     }
 
     // --------------------------------------------------------
-    // Fallback for token containing numeric userId
+    // FALLBACK BY NUMERIC USER ID
     // --------------------------------------------------------
 
     if (
@@ -127,18 +146,19 @@ const protect = async (req, res, next) => {
         decoded.userId
       );
 
-      if (Number.isFinite(numericUserId)) {
-        user =
-          await User.findOne({
-            userId: numericUserId,
-          }).select(
-            "-password -plainPassword"
-          );
+      if (
+        Number.isFinite(numericUserId)
+      ) {
+        user = await User.findOne({
+          userId: numericUserId,
+        }).select(
+          "-password -plainPassword"
+        );
       }
     }
 
     // --------------------------------------------------------
-    // User not found
+    // USER NOT FOUND
     // --------------------------------------------------------
 
     if (!user) {
@@ -149,29 +169,31 @@ const protect = async (req, res, next) => {
     }
 
     // --------------------------------------------------------
-    // Blocked user
+    // BLOCKED USER
     // --------------------------------------------------------
 
     if (user.status === "blocked") {
       return res.status(403).json({
         success: false,
-        message: "Your account has been blocked",
+        message:
+          "Your account has been blocked",
       });
     }
 
     // --------------------------------------------------------
-    // Attach authenticated user
+    // ATTACH USER
     // --------------------------------------------------------
 
     req.user = user;
 
-    // Numeric trading ID
+    // Numeric application user ID
     req.userId = Number(user.userId);
 
-    // Backward compatibility
+    // MongoDB ID compatibility
     req.id = user._id;
 
     next();
+
   } catch (error) {
     console.error(
       "PROTECT ERROR:",
@@ -189,7 +211,11 @@ const protect = async (req, res, next) => {
 // ADMIN ONLY
 // ============================================================
 
-const adminProtect = (req, res, next) => {
+const adminProtect = (
+  req,
+  res,
+  next
+) => {
   if (!req.user) {
     return res.status(401).json({
       success: false,
@@ -211,7 +237,11 @@ const adminProtect = (req, res, next) => {
 // USER ONLY
 // ============================================================
 
-const userProtect = (req, res, next) => {
+const userProtect = (
+  req,
+  res,
+  next
+) => {
   if (!req.user) {
     return res.status(401).json({
       success: false,
