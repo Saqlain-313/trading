@@ -64,5 +64,6 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
+// export const host = "http://localhost:4000";
+export const host = "/";
 export default api;
