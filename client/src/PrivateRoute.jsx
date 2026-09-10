@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
+
 import Spinner from "./components/Spinner";
 import { getUser } from "./Redux/Reducer/authReducer";
 
@@ -10,9 +11,14 @@ const MAIN_LOGIN_URL =
 const PrivateRoute = () => {
   const dispatch = useDispatch();
 
-  const { userInfo, loading } = useSelector(
-    (state) => state.auth
-  );
+  const {
+    userInfo,
+    loading,
+  } = useSelector((state) => state.auth);
+
+  // ============================================================
+  // CHECK AUTH
+  // ============================================================
 
   useEffect(() => {
     if (!userInfo) {
@@ -20,19 +26,29 @@ const PrivateRoute = () => {
     }
   }, [dispatch, userInfo]);
 
-  // Authentication check hone tak loader
+  // ============================================================
+  // WAITING FOR AUTH CHECK
+  // ============================================================
+
   if (loading) {
     return <Spinner />;
   }
 
-  // Subdomain par user nahi hai
-  // → Main domain login par redirect
+  // ============================================================
+  // NOT LOGGED IN
+  // REDIRECT TO MAIN DOMAIN LOGIN
+  // ============================================================
+
   if (!userInfo) {
     window.location.replace(MAIN_LOGIN_URL);
+
     return <Spinner />;
   }
 
-  // User authenticated hai
+  // ============================================================
+  // AUTHENTICATED
+  // ============================================================
+
   return <Outlet />;
 };
 

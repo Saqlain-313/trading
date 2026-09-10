@@ -1,4 +1,10 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
+
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -8,7 +14,6 @@ import PasswordRecovery from "./Pages/PasswordRecovery";
 import Withdraw from "./Pages/Withdraw";
 import Deposite from "./Pages/Deposite";
 import TradePair from "./components/TradePair";
-import Home from "./Pages/Home";
 import PrivateRoute from "./PrivateRoute";
 import Header from "./components/Header";
 import BonusPage from "./Pages/BouncePage";
@@ -18,7 +23,6 @@ import SupportModal from "./Pages/Support";
 
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "./Redux/Reducer/authReducer";
-import { useEffect } from "react";
 
 function App() {
   const dispatch = useDispatch();
@@ -28,77 +32,106 @@ function App() {
     loading,
   } = useSelector((state) => state.auth);
 
-  // Check logged-in user
+  // ============================================================
+  // CHECK MAIN-DOMAIN AUTH
+  // ============================================================
+
   useEffect(() => {
     dispatch(getUser());
   }, [dispatch]);
+
+  // ============================================================
+  // APP
+  // ============================================================
 
   return (
     <Router>
       <Header />
 
       <Routes>
-        {/* ================= PUBLIC ROUTES ================= */}
 
-        <Route
-          path="/"
-          element={
-            userInfo ? <TradeChart /> : <Home />
-          }
-        />
+        {/* ======================================================
+            ALL TRADE ROUTES ARE PROTECTED
+            ====================================================== */}
+
+        <Route element={<PrivateRoute />}>
+
+          {/* ROOT */}
+          <Route
+            path="/"
+            element={<TradeChart />}
+          />
+
+          {/* TRADE CHART */}
+          <Route
+            path="/TradeChart"
+            element={<TradeChart />}
+          />
+
+          {/* SIDE NAVBAR */}
+          <Route
+            path="/SideNavbar"
+            element={<TradeChart />}
+          />
+
+          {/* WITHDRAW */}
+          <Route
+            path="/Withdraw"
+            element={<Withdraw />}
+          />
+
+          {/* DEPOSIT */}
+          <Route
+            path="/Deposite"
+            element={<Deposite />}
+          />
+
+          {/* TRADE PAIR */}
+          <Route
+            path="/TradePair"
+            element={<TradePair />}
+          />
+
+          {/* BONUS */}
+          <Route
+            path="/bounce-page"
+            element={<BonusPage />}
+          />
+
+          {/* DEPOSIT PAYMENT */}
+          <Route
+            path="/deposit-payment"
+            element={<DepositPayment />}
+          />
+
+          {/* SUPPORT */}
+          <Route
+            path="/support"
+            element={<SupportModal />}
+          />
+
+        </Route>
+
+        {/* ======================================================
+            PASSWORD RECOVERY
+            ====================================================== */}
 
         <Route
           path="/PasswordRecovery"
           element={<PasswordRecovery />}
         />
 
-        {/* ================= PRIVATE ROUTES ================= */}
-
-        <Route element={<PrivateRoute />}>
-          <Route
-            path="/TradeChart"
-            element={<TradeChart />}
-          />
-
-          <Route
-            path="/SideNavbar"
-            element={<TradeChart />}
-          />
-
-          <Route
-            path="/Withdraw"
-            element={<Withdraw />}
-          />
-
-          <Route
-            path="/Deposite"
-            element={<Deposite />}
-          />
-
-          <Route
-            path="/TradePair"
-            element={<TradePair />}
-          />
-
-          <Route
-            path="/bounce-page"
-            element={<BonusPage />}
-          />
-
-          <Route
-            path="/deposit-payment"
-            element={<DepositPayment />}
-          />
-
-          <Route
-            path="/support"
-            element={<SupportModal />}
-          />
-        </Route>
       </Routes>
 
-      {/* Mobile footer only for logged-in users */}
+      {/* ========================================================
+          MOBILE FOOTER
+          ======================================================== */}
+
       {userInfo && <MobileFooter />}
+
+      {/* ========================================================
+          TOAST
+          ======================================================== */}
 
       <ToastContainer
         theme="dark"
@@ -109,6 +142,3 @@ function App() {
 }
 
 export default App;
-
-
-
