@@ -2,48 +2,51 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/authmodel");
 
 // ============================================================
-// GET TOKEN FROM COOKIE / HEADER
+// GET TOKEN
+// Cookie priority:
+// 1. powerhit
+// 2. token
+// 3. adminToken
+// 4. Authorization Bearer
 // ============================================================
 
 const getToken = (req) => {
   const cookies = req.cookies || {};
 
-  console.log(
-    "COOKIES IN getToken():",
-    cookies
-  );
+  console.log("========== AUTH DEBUG ==========");
+  console.log("HOST:", req.headers.host);
+  console.log("ORIGIN:", req.headers.origin);
+  console.log("RAW COOKIE:", req.headers.cookie);
+  console.log("PARSED COOKIES:", cookies);
+  console.log("AUTH HEADER:", req.headers.authorization);
+  console.log("================================");
 
-  // ----------------------------------------------------------
-  // ADMIN COOKIE
-  // ----------------------------------------------------------
-
-  if (cookies.adminToken) {
-    console.log("TOKEN SOURCE: Admin Cookie");
-    return cookies.adminToken;
-  }
-
-  // ----------------------------------------------------------
-  // USER COOKIE
-  // ----------------------------------------------------------
-
+  // powerhit - preferred user cookie
   if (cookies.powerhit) {
-    console.log("TOKEN SOURCE: User Cookie");
+    console.log("TOKEN SOURCE: powerhit");
     return cookies.powerhit;
   }
 
-  // ----------------------------------------------------------
-  // AUTHORIZATION HEADER FALLBACK
-  // ----------------------------------------------------------
+  // token - old/current login cookie
+  if (cookies.token) {
+    console.log("TOKEN SOURCE: token");
+    return cookies.token;
+  }
 
+  // admin
+  if (cookies.adminToken) {
+    console.log("TOKEN SOURCE: adminToken");
+    return cookies.adminToken;
+  }
+
+  // Authorization header
   const authHeader = req.headers?.authorization;
 
   if (
     authHeader &&
     authHeader.startsWith("Bearer ")
   ) {
-    console.log(
-      "TOKEN SOURCE: Authorization Header"
-    );
+    console.log("TOKEN SOURCE: Authorization");
 
     return authHeader
       .substring(7)
@@ -56,7 +59,7 @@ const getToken = (req) => {
 };
 
 // ============================================================
-// PROTECT USER / ADMIN
+// PROTECT
 // ============================================================
 
 const protect = async (req, res, next) => {
@@ -64,13 +67,13 @@ const protect = async (req, res, next) => {
     const token = getToken(req);
 
     // --------------------------------------------------------
-    // NO TOKEN
+    // TOKEN NOT FOUND
     // --------------------------------------------------------
 
     if (!token) {
       return res.status(401).json({
         success: false,
-        message: "Not authorized",
+        message: "Not authorized - token not found",
       });
     }
 
@@ -78,10 +81,10 @@ const protect = async (req, res, next) => {
     // JWT SECRET
     // --------------------------------------------------------
 
-    if (!process.env.JWT_SECRET) {
-      console.error(
-        "JWT_SECRET is not configured"
-      );
+    const JWT_SECRET = process.env.JWT_SECRET;
+
+    if (!JWT_SECRET) {
+      console.error("JWT_SECRET is not configured");
 
       return res.status(500).json({
         success: false,
@@ -98,8 +101,10 @@ const protect = async (req, res, next) => {
     try {
       decoded = jwt.verify(
         token,
-        process.env.JWT_SECRET
+        JWT_SECRET
       );
+
+      console.log("JWT DECODED:", decoded);
     } catch (jwtError) {
       console.error(
         "JWT VERIFY ERROR:",
@@ -113,28 +118,39 @@ const protect = async (req, res, next) => {
     }
 
     // --------------------------------------------------------
-    // FIND USER BY MONGODB _id
+    // FIND USER
     // --------------------------------------------------------
 
     let user = null;
+
+    // --------------------------------------------------------
+    // 1. MongoDB _id
+    // --------------------------------------------------------
 
     if (decoded.id) {
       try {
         user = await User.findById(
           decoded.id
-        ).select(
-          "-password -plainPassword"
-        );
+        )
+          .select("-password -plainPassword")
+          .lean();
+
+        if (user) {
+          console.log(
+            "USER FOUND BY MONGO ID:",
+            user.userId
+          );
+        }
       } catch (error) {
-        console.error(
-          "USER FIND ERROR:",
+        console.log(
+          "Mongo ID lookup skipped:",
           error.message
         );
       }
     }
 
     // --------------------------------------------------------
-    // FALLBACK BY NUMERIC USER ID
+    // 2. Numeric userId
     // --------------------------------------------------------
 
     if (
@@ -146,14 +162,19 @@ const protect = async (req, res, next) => {
         decoded.userId
       );
 
-      if (
-        Number.isFinite(numericUserId)
-      ) {
+      if (Number.isFinite(numericUserId)) {
         user = await User.findOne({
           userId: numericUserId,
-        }).select(
-          "-password -plainPassword"
-        );
+        })
+          .select("-password -plainPassword")
+          .lean();
+
+        if (user) {
+          console.log(
+            "USER FOUND BY USER ID:",
+            user.userId
+          );
+        }
       }
     }
 
@@ -162,6 +183,11 @@ const protect = async (req, res, next) => {
     // --------------------------------------------------------
 
     if (!user) {
+      console.error(
+        "USER NOT FOUND FOR JWT:",
+        decoded
+      );
+
       return res.status(401).json({
         success: false,
         message: "User not found",
@@ -169,14 +195,13 @@ const protect = async (req, res, next) => {
     }
 
     // --------------------------------------------------------
-    // BLOCKED USER
+    // BLOCKED
     // --------------------------------------------------------
 
     if (user.status === "blocked") {
       return res.status(403).json({
         success: false,
-        message:
-          "Your account has been blocked",
+        message: "Your account has been blocked",
       });
     }
 
@@ -186,11 +211,16 @@ const protect = async (req, res, next) => {
 
     req.user = user;
 
-    // Numeric application user ID
-    req.userId = Number(user.userId);
+    req.userId = Number(
+      user.userId
+    );
 
-    // MongoDB ID compatibility
     req.id = user._id;
+
+    console.log(
+      "AUTH SUCCESS - USER:",
+      user.userId
+    );
 
     next();
 

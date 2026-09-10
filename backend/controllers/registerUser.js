@@ -135,9 +135,13 @@ exports.loginUser = async (req, res) => {
       .json({ success: false, message: "Server error", error: e.message });
   }
 };
+
+
 exports.getUser = async (req, res) => {
   try {
     const u = await User.findOne({ userId: uid(req) })
+
+    console.log("Fetched user:", u);
       .select("-plane_password")
       .lean();
     if (!u)

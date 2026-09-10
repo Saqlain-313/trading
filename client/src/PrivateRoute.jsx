@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 import Spinner from "./components/Spinner";
 import { getUser } from "./Redux/Reducer/authReducer";
@@ -10,44 +10,50 @@ const MAIN_LOGIN_URL =
 
 const PrivateRoute = () => {
   const dispatch = useDispatch();
+  const redirecting = useRef(false);
 
   const {
     userInfo,
     loading,
+    error,
   } = useSelector((state) => state.auth);
 
-  // ============================================================
-  // CHECK AUTH
-  // ============================================================
-
   useEffect(() => {
-    if (!userInfo) {
-      dispatch(getUser());
+    // Already authenticated
+    if (userInfo) {
+      return;
     }
+
+    // Don't request repeatedly
+    dispatch(getUser());
   }, [dispatch, userInfo]);
 
-  // ============================================================
-  // WAITING FOR AUTH CHECK
-  // ============================================================
+  useEffect(() => {
+    if (
+      !loading &&
+      !userInfo &&
+      !redirecting.current
+    ) {
+      redirecting.current = true;
 
-  if (loading) {
+      console.log(
+        "PROFILE AUTH FAILED:",
+        error
+      );
+
+      window.location.replace(
+        MAIN_LOGIN_URL
+      );
+    }
+  }, [
+    loading,
+    userInfo,
+    error,
+  ]);
+
+  if (loading || !userInfo) {
     return <Spinner />;
   }
-
-  // ============================================================
-  // NOT LOGGED IN
-  // REDIRECT TO MAIN DOMAIN LOGIN
-  // ============================================================
-
-  if (!userInfo) {
-    window.location.replace(MAIN_LOGIN_URL);
-
-    return <Spinner />;
-  }
-
-  // ============================================================
-  // AUTHENTICATED
-  // ============================================================
 
   return <Outlet />;
 };

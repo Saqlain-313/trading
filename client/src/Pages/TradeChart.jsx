@@ -31,6 +31,10 @@ import {
 } from "../Redux/Reducer/betReducer";
 import { subscribeSocket } from "../Redux/socket";
 
+const tokken = localStorage.getItem("token");
+
+console.log("tokken in trade chart:", tokken);
+
 const TradeChart = () => {
   const { period, bet, traderhistory, pendingResult } = useSelector(
     (state) => state.bet,

@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -9,102 +10,109 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import TradeChart from "./Pages/TradeChart";
-import SideNavbar from "./Pages/SideNavbar";
 import PasswordRecovery from "./Pages/PasswordRecovery";
 import Withdraw from "./Pages/Withdraw";
 import Deposite from "./Pages/Deposite";
 import TradePair from "./components/TradePair";
+
 import PrivateRoute from "./PrivateRoute";
+
 import Header from "./components/Header";
 import BonusPage from "./Pages/BouncePage";
 import DepositPayment from "./Pages/DepositPayment";
 import MobileFooter from "./components/MobileFooter";
 import SupportModal from "./Pages/Support";
 
-import { useDispatch, useSelector } from "react-redux";
-import { getUser } from "./Redux/Reducer/authReducer";
+import { useSelector } from "react-redux";
 
 function App() {
-  const dispatch = useDispatch();
-
   const {
     userInfo,
-    loading,
-  } = useSelector((state) => state.auth);
-
-  // ============================================================
-  // CHECK MAIN-DOMAIN AUTH
-  // ============================================================
-
-  useEffect(() => {
-    dispatch(getUser());
-  }, [dispatch]);
-
-  // ============================================================
-  // APP
-  // ============================================================
+  } = useSelector(
+    (state) => state.auth
+  );
 
   return (
     <Router>
+
+      {/* ========================================================
+          HEADER
+      ======================================================== */}
+
       <Header />
+
+      {/* ========================================================
+          ROUTES
+      ======================================================== */}
 
       <Routes>
 
         {/* ======================================================
-            ALL TRADE ROUTES ARE PROTECTED
-            ====================================================== */}
+            PROTECTED ROUTES
+        ====================================================== */}
 
-        <Route element={<PrivateRoute />}>
+        <Route
+          element={<PrivateRoute />}
+        >
 
           {/* ROOT */}
+
           <Route
             path="/"
             element={<TradeChart />}
           />
 
           {/* TRADE CHART */}
+
           <Route
             path="/TradeChart"
             element={<TradeChart />}
           />
 
           {/* SIDE NAVBAR */}
+
           <Route
             path="/SideNavbar"
             element={<TradeChart />}
           />
 
           {/* WITHDRAW */}
+
           <Route
             path="/Withdraw"
             element={<Withdraw />}
           />
 
           {/* DEPOSIT */}
+
           <Route
             path="/Deposite"
             element={<Deposite />}
           />
 
           {/* TRADE PAIR */}
+
           <Route
             path="/TradePair"
             element={<TradePair />}
           />
 
           {/* BONUS */}
+
           <Route
             path="/bounce-page"
             element={<BonusPage />}
           />
 
           {/* DEPOSIT PAYMENT */}
+
           <Route
             path="/deposit-payment"
             element={<DepositPayment />}
           />
 
           {/* SUPPORT */}
+
           <Route
             path="/support"
             element={<SupportModal />}
@@ -113,8 +121,8 @@ function App() {
         </Route>
 
         {/* ======================================================
-            PASSWORD RECOVERY
-            ====================================================== */}
+            PUBLIC ROUTES
+        ====================================================== */}
 
         <Route
           path="/PasswordRecovery"
@@ -125,18 +133,21 @@ function App() {
 
       {/* ========================================================
           MOBILE FOOTER
-          ======================================================== */}
+      ======================================================== */}
 
-      {userInfo && <MobileFooter />}
+      {userInfo && (
+        <MobileFooter />
+      )}
 
       {/* ========================================================
           TOAST
-          ======================================================== */}
+      ======================================================== */}
 
       <ToastContainer
         theme="dark"
         autoClose={1000}
       />
+
     </Router>
   );
 }
