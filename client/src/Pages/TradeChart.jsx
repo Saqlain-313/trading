@@ -437,9 +437,7 @@ const TradeChart = () => {
               <button
                 disabled={isDisabled}
                 onClick={handleUp}
-                className="bg-gradient-to-b from-[#FFF19A] via-[#FFC928] to-[#D99200]
-border border-[#FFD75A]
-shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px_rgba(210,145,0,0.45)] hover:from-[#F0D678] hover:via-[#D3A934] hover:to-[#B9850A] text-black px-5 py-2 md:px-10 md:py-3 rounded-[11px] h-[5vh] md:h-[6vh] flex items-center justify-between font-bold space-x-1 md:space-x-2 transition-all text-xs md:text-sm"
+                className="bg-red-600 text-black px-5 py-2 md:px-10 md:py-3 rounded-[11px] h-[5vh] md:h-[6vh] flex items-center justify-between font-bold space-x-1 md:space-x-2 transition-all text-xs md:text-sm"
               >
                 <span>Up</span>
                 <FaArrowUp className="text-xs md:text-sm bg-white/20 size-6 p-1 rounded-full" />
@@ -458,7 +456,7 @@ shadow-[inset_0_1px_2px_rgba(255,255,255,0.95),0_2px_7px_rgba(210,145,0,0.45)] h
               <button
                 disabled={isDisabled}
                 onClick={handleDown}
-                className="bg-white border-2 border-[#D4AF37] hover:bg-[#FFF9EA] text-[#E7443A] px-5 py-2 md:px-10 md:py-3 rounded-[11px] h-[5vh] md:h-[6vh] flex items-center justify-between font-bold space-x-1 md:space-x-2 transition-all text-xs md:text-sm shadow-[0_2px_6px_rgba(164,124,25,0.08)]"
+                className="bg-[#E7443A] text-white px-5 py-2 md:px-10 md:py-3 rounded-[11px] h-[5vh] md:h-[6vh] flex items-center justify-between font-bold space-x-1 md:space-x-2 transition-all text-xs md:text-sm shadow-[0_2px_6px_rgba(164,124,25,0.08)]"
               >
                 <span>Down</span>
                 <FaArrowDown className="text-xs md:text-sm bg-[#FDE6E2] text-[#E7443A] size-6 p-1 rounded-full" />

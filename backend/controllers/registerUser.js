@@ -61,15 +61,10 @@ exports.registerUser = async (req, res) => {
       // lotterry.marinclub.site
       // lotterry.trade.marinclub.site
       domain:
-        process.env.NODE_ENV === "production"
-          ? ".marinclub.site"
-          : undefined,
+        process.env.NODE_ENV === "production" ? ".marinclub.site" : undefined,
 
       // HTTPS production cross-subdomain requests
-      sameSite:
-        process.env.NODE_ENV === "production"
-          ? "none"
-          : "lax",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
 
       path: "/",
     });
@@ -103,10 +98,7 @@ exports.loginUser = async (req, res) => {
     const token = jwt.sign({ userId: u.userId, email: u.email }, JWT_SECRET, {
       expiresIn: "7d",
     });
-    await User.updateOne(
-      { _id: u._id },
-      { $set: { token } },
-    );
+    await User.updateOne({ _id: u._id }, { $set: { token } });
     res.cookie("token", token, {
       httpOnly: true,
       maxAge: 604800000,
@@ -116,15 +108,10 @@ exports.loginUser = async (req, res) => {
       // lotterry.marinclub.site
       // lotterry.trade.marinclub.site
       domain:
-        process.env.NODE_ENV === "production"
-          ? ".marinclub.site"
-          : undefined,
+        process.env.NODE_ENV === "production" ? ".marinclub.site" : undefined,
 
       // HTTPS production cross-subdomain requests
-      sameSite:
-        process.env.NODE_ENV === "production"
-          ? "none"
-          : "lax",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
 
       path: "/",
     });
@@ -136,14 +123,11 @@ exports.loginUser = async (req, res) => {
   }
 };
 
-
 exports.getUser = async (req, res) => {
   try {
-    const u = await User.findOne({ userId: uid(req) })
+    const u = await User.findOne({ userId: uid(req) });
 
-    console.log("Fetched user:", u);
-      .select("-plane_password")
-      .lean();
+    console.log("Fetched user:", u).select("-plane_password").lean();
     if (!u)
       return res.status(404).json({ success: false, error: "User not found" });
     return res.json({ success: true, userInfo: [u] });
@@ -236,7 +220,7 @@ exports.verifyOtpAndUpdatePassword = async (req, res) => {
           otp: null,
           otpExpiresAt: null,
         },
-      }
+      },
     );
 
     return res.json({
@@ -559,14 +543,9 @@ exports.logout = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
 
       domain:
-        process.env.NODE_ENV === "production"
-          ? ".marinclub.site"
-          : undefined,
+        process.env.NODE_ENV === "production" ? ".marinclub.site" : undefined,
 
-      sameSite:
-        process.env.NODE_ENV === "production"
-          ? "none"
-          : "lax",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
 
       path: "/",
     });
