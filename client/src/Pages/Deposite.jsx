@@ -9,7 +9,6 @@ import BonusPage from "./BouncePage";
 import DepositPayment from "./DepositPayment";
 import Sidebar from "../components/Sidebar";
 import SunPay from "./SunPay";
-import Top from "../components/top";
 
 const Deposite = () => {
   const [activeSection, setActiveSection] = useState("Deposit");
@@ -54,7 +53,6 @@ const Deposite = () => {
         ${topPopupOpen ? "w-[550px] opacity-100" : "w-0 opacity-0"}
       `}
           >
-            <Top topPopupOpen={topPopupOpen} setTopPopupOpen={setTopPopupOpen} />
           </div>
       <div className="w-full lg:w-[95%] h-[88vh] overflow-hidden">
         <div className="lg:w-[40%] overflow-auto hidden lg:flex sm:flex-wrap items-center px-5 justify-between text-white font-medium text-sm rounded-lg bg-[#2b3040]">
